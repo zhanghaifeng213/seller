@@ -1,24 +1,10 @@
-# 返回数据
+# 后端接口规范
 
-## 用户模块
+1. 编码规范
+2. 命名规范
 
-1. 0 超级管理员；1 普通管理员 [ok]
-2. 系统默认添加一个超级管理员  admin/admin [ok]
-3. 用户头像修改时，物理删除原来的图片
+## 相关参考资料
 
-## 菜单模块
-
-1. category 菜单分类(添加、删除(当前分类下没有菜单才可以删除)、修改、查询[无状态])
-2. menu 菜单(必须关联菜单分类)
-
-## API返回数据
-
-```javascript
-{
-  code: 1,
-  data: '',
-  errMsg: '', // code不为1的时候, 会有这个字段
-}
-```
-
-// 添加用户登录信息 [ok]
++ [ECMAScript 6基础](http://es6.ruanyifeng.com/#docs/class)
++ [路由设计](https://chenshenhai.github.io/koa2-note/note/project/route.html)
++ [Node.js的Koa实现JWT用户认证](https://zhuanlan.zhihu.com/p/36351714)
