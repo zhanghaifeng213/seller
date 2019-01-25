@@ -38,3 +38,18 @@
   errMsg: '必填参数不能为空', // code不为1的时候, 会有这个字段
 }
 ```
+
+## 接口文档更新
+
+文档使用[http://apidocjs.com/](http://apidocjs.com/)根据接口代码注释规范自动生成文档，生成、更新方式如下:
+
+```js
+// 安装命令行工具
+npm install apidoc -g
+
+// 运行更新命令
+npm run doc
+
+// 生成完成后启动服务，访问 http://127.0.0.1:3030/apidoc/ 可查看文档
+npm run dev
+```
