@@ -10,7 +10,7 @@ const user = require('../control/user');
 
 
 /**
- * @api {post} /user/login 用户注册
+ * @api {post} /user/reg 用户注册
  * @apiName reg
  * @apiGroup User
  * @apiParam (params) {String} username 用户名
@@ -59,7 +59,7 @@ Router.post('/login', user.login)
 Router.get('/upload', user.upload)
 
 /**
- * @api {get} /user/login 用户信息查询
+ * @api {get} /user/info 用户信息查询
  * @apiName userinfo
  * @apiGroup User
  * @apiDescription 用户信息查询需要用户登录
