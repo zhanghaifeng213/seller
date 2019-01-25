@@ -1,5 +1,5 @@
 const jsonwebtoken = require('jsonwebtoken');
-const UserModel = require("../Models/User")
+const UserModel = require("../Models/user")
 const encrypt = require('../util/encrypt')
 
 const {
@@ -81,17 +81,17 @@ class User {
     }
 
     await new Promise((resolve, reject) => {
-        UserModel.find({
-          username: username
-        }, (err, data) => {
-          if (err) return reject(err)
-          if (data.length === 0) return reject('用户名不存在')
-          if (data[0].password === encrypt(password)) {
-            return resolve(data)
-          }
-          resolve("")
-        })
+      UserModel.find({
+        username: username
+      }, (err, data) => {
+        if (err) return reject(err)
+        if (data.length === 0) return reject('用户名不存在')
+        if (data[0].password === encrypt(password)) {
+          return resolve(data)
+        }
+        resolve("")
       })
+    })
       .then(async data => {
         if (!data) {
           return ctx.body = {
@@ -155,22 +155,22 @@ class User {
       await User.update({
         _id: id
       }, {
-        $set: {
-          avatar: "/avatar/" + filename
-        }
-      }, (err, res) => {
-        if (err) {
-          data = {
-            status: 0,
-            message: err
+          $set: {
+            avatar: "/avatar/" + filename
           }
-        } else {
-          data = {
-            status: 1,
-            message: "上传成功"
+        }, (err, res) => {
+          if (err) {
+            data = {
+              status: 0,
+              message: err
+            }
+          } else {
+            data = {
+              status: 1,
+              message: "上传成功"
+            }
           }
-        }
-      })
+        })
       ctx.body = data
     } else {
       return ctx.body = {
@@ -198,24 +198,24 @@ class User {
         id
       } = payload;
       await new Promise((resolve, reject) => {
-          UserModel.find({
-            _id: id
-          }, (err, data) => {
-            if (err) {
-              return {
-                code: 0,
-                errMsg: '服务器错误'
-              }
-            };
-            if (!data) {
-              return {
-                code: 0,
-                errMsg: '当前用户不存在'
-              }
-            };
-            resolve(data[0]);
-          })
+        UserModel.find({
+          _id: id
+        }, (err, data) => {
+          if (err) {
+            return {
+              code: 0,
+              errMsg: '服务器错误'
+            }
+          };
+          if (!data) {
+            return {
+              code: 0,
+              errMsg: '当前用户不存在'
+            }
+          };
+          resolve(data[0]);
         })
+      })
         .then(data => {
           const {
             role,
