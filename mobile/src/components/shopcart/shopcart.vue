@@ -12,7 +12,7 @@
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
           <!-- <div class="desc">另需配送费￥{{deliveryPrice}}元</div> -->
         </div>
-        <div class="content-right" @click.stop.prevent="pay">
+        <div class="content-right" @click.stop.prevent="passCode">
           <div class="pay" :class="payClass">
             {{payDesc}}
           </div>
@@ -129,9 +129,9 @@ export default {
       //   return '去结算';
       // }
       if (this.totalPrice === 0) {
-        return "点单";
+        return "扫码点单";
       } else {
-        return "点单";
+        return "扫码点单";
       }
     },
     payClass() {
@@ -231,6 +231,9 @@ export default {
         ball.show = false;
         el.style.display = "none";
       }
+    },
+    passCode() {
+      eventBus.$emit("passCode");
     }
   },
   components: {
