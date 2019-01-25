@@ -12,13 +12,21 @@ class User {
     const {
       username,
       password,
-      role = 0
+      role = 1
     } = ctx.request.body;
     if (!username || !password) {
       ctx.body = {
-        state: 0,
-        data: '注册失败',
-        message: '用户名或者密码不能为空'
+        code: 0,
+        data: '',
+        errMsg: '用户名或者密码不能为空'
+      }
+    }
+
+    if (role === 0 && username !== 'admin' && password !== 'admin') {
+      return ctx.body = {
+        code: 0,
+        data: '',
+        errMsg: '管理员角色已关闭注册，请联系管理员添加!'
       }
     }
 
@@ -32,35 +40,23 @@ class User {
             password: encrypt(password),
             role,
           }).save().then(data => {
-            const {
-              role,
-              avatar,
-              id,
-              username
-            } = data;
             return resolve({
-              state: 1,
-              data: {
-                role,
-                avatar,
-                id,
-                username
-              },
-              message: '注册成功'
+              code: 1,
+              data: '注册成功',
             });
           }).catch(err => {
             // console.log('管理员账号检查失败')
             return resolve({
-              state: 0,
-              data: '数据查找错误',
-              message: '注册失败'
+              code: 0,
+              data: '',
+              errMsg: '数据查询错误'
             });
           })
         } else {
           return resolve({
-            state: 0,
-            data: '用户名已存在',
-            message: '注册失败'
+            code: 0,
+            data: '',
+            errMsg: '用户名已存在'
           });
         }
       })
@@ -77,9 +73,9 @@ class User {
     } = ctx.request.body;
     if (!username || !password) {
       ctx.body = {
-        state: 0,
-        data: '参数错误',
-        message: '用户名或者密码不能为空'
+        code: 0,
+        data: '',
+        errMsg: '用户名或者密码不能为空'
       }
       return;
     }
@@ -88,10 +84,8 @@ class User {
         UserModel.find({
           username: username
         }, (err, data) => {
-          // console.log("查询数据库username：" + data)
           if (err) return reject(err)
           if (data.length === 0) return reject('用户名不存在')
-          // 把用户传过来密码加密跟数据库比对
           if (data[0].password === encrypt(password)) {
             return resolve(data)
           }
@@ -101,26 +95,35 @@ class User {
       .then(async data => {
         if (!data) {
           return ctx.body = {
-            state: 0,
-            message: "密码不正确，登陆失败"
+            code: 0,
+            data: '',
+            errMsg: "密码不正确，登陆失败"
           }
         }
-
+        const {
+          role,
+          avatar,
+          username,
+          id
+        } = data[0];
         ctx.body = {
-          state: 1,
-          message: "登陆成功",
+          code: 1,
           data: {
+            role,
+            avatar,
+            username,
+            id,
             token: getToken({
-              id: data[0].id,
+              id,
               username
             })
           }
         }
       })
       .catch(async err => {
-        ctx.body = {
-          state: 0,
-          message: "登陆失败"
+        return ctx.body = {
+          code: 0,
+          errMsg: "登陆失败"
         }
       })
   }
@@ -128,8 +131,8 @@ class User {
   // 退出登录(客户端清除token等相关本地信息即可)
   async logout(ctx, next) {
     ctx.body = {
-      state: 1,
-      message: "退出成功"
+      code: 1,
+      data: "退出成功"
     }
     next();
   }
@@ -171,7 +174,7 @@ class User {
       ctx.body = data
     } else {
       return ctx.body = {
-        state: 0,
+        code: 0,
         message: '查询失败',
         data: '请先登录'
       }
@@ -182,9 +185,9 @@ class User {
   async getinfo(ctx, next) {
     if (!ctx.header || !ctx.header.authorization) {
       ctx.body = {
-        state: 0,
-        message: '查询失败',
-        data: '请先登录'
+        code: 0,
+        errMsg: '请先登录',
+        data: ''
       }
       return;
     }
@@ -200,14 +203,14 @@ class User {
           }, (err, data) => {
             if (err) {
               return {
-                state: 0,
-                message: '服务器错误'
+                code: 0,
+                errMsg: '服务器错误'
               }
             };
             if (!data) {
               return {
-                state: 0,
-                message: '当前用不存在'
+                code: 0,
+                errMsg: '当前用户不存在'
               }
             };
             resolve(data[0]);
@@ -221,8 +224,7 @@ class User {
             id
           } = data;
           return ctx.body = {
-            state: 1,
-            message: '查询成功',
+            code: 1,
             data: {
               role,
               avatar,
@@ -234,24 +236,20 @@ class User {
         .catch(err => {
           ctx.status = 401;
           ctx.body = {
-            state: 0,
-            message: "查询失败"
+            code: 0,
+            errMsg: '查询失败'
           }
         })
     } else {
       return ctx.body = {
-        state: 0,
-        message: '查询失败',
-        data: '请先登录'
+        code: 0,
+        errMsg: '查询失败, 请先登录',
       }
     }
   }
 }
 
 module.exports = new User();
-
-
-
 
 /* 获取一个期限为4小时的token */
 function getToken(payload = {}) {
