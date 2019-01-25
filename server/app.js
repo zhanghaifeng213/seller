@@ -5,7 +5,9 @@ const body = require('koa-body');
 const path = require('path');
 const jwt = require('koa-jwt'); // 用于路由权限控制
 
-const { jwtSecret } = require('./Config/config');
+const {
+  jwtSecret
+} = require('./Config/config');
 
 // jwt配置
 const jwtConfig = jwt({
@@ -13,7 +15,7 @@ const jwtConfig = jwt({
 }).unless({
   path: [
     /^\/user\/login/,
-    /^\/api\/reg/,
+    /^\/user\/reg/,
     /^\/system/,
     /^\/home/,
   ]
@@ -36,5 +38,20 @@ app.use(logger())
   .use(jwtConfig) // token处理
 
 app.listen(serverPort, () => {
-  console.log(`Server is running at http://127.0.0.1:${serverPort}`)
+  console.log(`Server is running at http://127.0.0.1:${serverPort}`);
+
+  init();
 })
+
+// 系统初始化
+// 1. 创建一个超级管理员用户 admin/admin
+function init() {
+  const request = require('request');
+  request.post(`http://127.0.0.1:${serverPort}/user/reg`, {
+    form: {
+      username: 'admin',
+      password: 'admin',
+      role: 0
+    }
+  })
+}
