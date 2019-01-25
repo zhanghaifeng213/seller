@@ -1,10 +1,10 @@
 <template>
-  <div>login</div>
+  <div>mian-income</div>
 </template>
 <script>
 
 export default {
-  name: 'login'
+  name: 'mian-income'
 }
 </script>
 
