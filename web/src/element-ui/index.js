@@ -153,3 +153,9 @@ Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$message = Message
 
 Vue.prototype.$ELEMENT = { size: 'medium' }
+
+登录
+权限管理
+菜单
+分类
+桌号

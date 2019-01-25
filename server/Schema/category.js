@@ -1,6 +1,10 @@
-const { Schema } = require("./config")
+const {
+  Schema
+} = require("./config")
 
 const CategorySchema = new Schema({
   name: String,
-}, { versionKey: false })
+}, {
+  versionKey: false
+})
 module.exports = CategorySchema
