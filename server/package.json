@@ -20,7 +20,8 @@
     "supervisor": "0.12.0"
   },
   "scripts": {
-    "dev": "supervisor app.js"
+    "dev": "supervisor app.js",
+    "doc": "apidoc -i routers/ -o public/apidoc"
   },
   "keywords": [],
   "author": "",

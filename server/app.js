@@ -18,6 +18,7 @@ const jwtConfig = jwt({
     /^\/user\/reg/,
     /^\/system/,
     /^\/home/,
+    /^\/apidoc/,
   ]
 })
 
