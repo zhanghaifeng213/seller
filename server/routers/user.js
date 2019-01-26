@@ -29,6 +29,28 @@ const user = require('../control/user');
  */
 Router.post('/reg', user.reg)
 /**
+ * @api {post} /user/update 用户修改
+ * @apiName update
+ * @apiGroup User
+ * @apiParam (params) {String} username 用户名 
+ * @apiParam (params) {String} password 用户密码
+ * @apiParam (params) {number} role 当前操作人角色
+ * @apiParam (params) {String} id 被修改人id
+ * @apiSuccessExample Success-Response:
+ * {
+    "code": 1,
+    "data": "修改成功"
+    }
+ *
+ * @apiErrorExample {json} Error-Response:
+ * {
+    code: 0,
+    data: '',
+    errMsg: '没有权限!'
+    }
+ */
+Router.post('/update', user.update)
+/**
  * @api {post} /user/del 用户删除
  * @apiName del
  * @apiGroup User

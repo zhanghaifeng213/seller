@@ -64,6 +64,29 @@ class User {
       return ctx.body = res;
     })
   }
+  // 用户修改
+  async update(ctx) {
+    const {
+      username,
+      password,
+      id,
+      role
+    } = ctx.request.body;
+    if (role == 0) {
+      await UserModel.updateOne({ _id: id }, { username, password: encrypt(password) });
+      ctx.body = {
+        code: 1,
+        data: '修改成功'
+      }
+    } else {
+      ctx.body = {
+        code: 0,
+        data: '',
+        errMsg: '没有权限!'
+      }
+    }
+
+  }
   // 用户删除
   async del(ctx) {
     const {
