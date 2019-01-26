@@ -13,16 +13,17 @@
 
 ## 菜单模块
 
-- [ ] category  菜单分类
-  - [ ] 添加 (/category/add)
-  - [ ] 删除(当前分类下没有菜单才可以删除)(/category/delete)
-  - [ ] 修改(/category/update)
-  - [ ] 查询 (/category/query)
-- [ ] menu 菜单
-  - [ ] 添加 (必须关联菜单分类)(/menu/add)
-  - [ ] 删除(/menu/delete)
-  - [ ] 修改(/menu/update)
-  - [ ] 查询(/menu/query)
+- [x] category  菜单分类
+  - [x] 添加 (/category/add)
+  - [x] 删除(当前分类下没有菜单才可以删除)(/category/delete)
+  - [x] 修改(/category/update)
+  - [x] 查询 (/category/query)
+- [x] menu 菜单
+  - [x] 添加 (必须关联菜单分类)(/menu/add)
+  - [x] 删除(/menu/delete)
+  - [x] 修改(/menu/update)
+  - [x] 查询(/menu/allList)
+  - [x] 根据cid查询(/menu/getListByCid)
 
 ## API 返回数据格式
 
