@@ -8,7 +8,6 @@
 const Router = require('koa-router')();
 const user = require('../control/user');
 
-
 /**
  * @api {post} /user/reg 用户注册
  * @apiName reg
@@ -48,7 +47,7 @@ Router.post('/reg', user.reg)
         errMsg: '没有权限'
     }
  */
-Router.post('/del', user.del)
+Router.post('/del', user.verifyToken, user.del)
 /**
  * @api {get} /user/inquire 所有用户信息查询
  * @apiName inquire
@@ -85,7 +84,7 @@ Router.post('/del', user.del)
 }
  */
 
-Router.get('/inquire', user.inquire)
+Router.get('/inquire', user.verifyToken, user.inquire)
 
 
 /**
@@ -114,7 +113,7 @@ Router.get('/inquire', user.inquire)
  */
 Router.post('/login', user.login)
 
-Router.get('/upload', user.upload)
+Router.get('/upload', user.verifyToken, user.upload)
 
 /**
  * @api {get} /user/info 用户信息查询
@@ -136,7 +135,7 @@ Router.get('/upload', user.upload)
         }
     }
  */
-Router.get('/info', user.getinfo)
-Router.get('/logout', user.logout)
+Router.get('/info', user.verifyToken, user.getinfo)
+
 
 module.exports = Router;

@@ -180,7 +180,7 @@ class User {
             avatar,
             username,
             id,
-            token: getToken({
+            token: signToken({
               id,
               username
             })
@@ -193,15 +193,6 @@ class User {
           errMsg: "登陆失败"
         }
       })
-  }
-
-  // 退出登录(客户端清除token等相关本地信息即可)
-  async logout(ctx, next) {
-    ctx.body = {
-      code: 1,
-      data: "退出成功"
-    }
-    next();
   }
 
   // 图像修改
@@ -314,12 +305,41 @@ class User {
       }
     }
   }
+
+  // 获取并验证token
+  async verifyToken(ctx, next) {
+    const token = getToken(ctx);
+    if (!token) return ctx.body = {
+      code: 0,
+      message: '请先登录',
+      data: ''
+    };
+    try {
+      if (await jsonwebtoken.verify(token, jwtSecret)) {
+        await next();
+      } else {
+        return ctx.body = {
+          code: 0,
+          message: '验证登陆失败',
+          data: ''
+        };
+      };
+    } catch (error) {
+      ctx.throw(401, 'Bad Authorization header format. Format is "Authorization: Bearer <token>"');
+      return ctx.body = {
+        code: 0,
+        message: '服务器错误',
+        data: ''
+      };
+    }
+
+  }
 }
 
 module.exports = new User();
 
 /* 获取一个期限为4小时的token */
-function getToken(payload = {}) {
+function signToken(payload = {}) {
   return jsonwebtoken.sign(payload, jwtSecret, {
     expiresIn: '4h'
   });
@@ -338,3 +358,23 @@ async function getJWTPayload(token) {
     return;
   }
 }
+
+// 获取token
+const getToken = (ctx) => {
+  if (!ctx.header || !ctx.header.authorization) {
+    return false;
+  }
+  const parts = ctx.header.authorization.split(' ');
+  if (parts.length === 2) {
+    const scheme = parts[0];
+    const credentials = parts[1];
+    if (/^Bearer$/i.test(scheme)) {
+      return credentials;
+    }
+  }
+  if (!opts.passthrough) {
+    ctx.throw(401, 'Bad Authorization header format. Format is "Authorization: Bearer <token>"');
+    return false
+  }
+}
+
