@@ -29,6 +29,64 @@ const user = require('../control/user');
     }
  */
 Router.post('/reg', user.reg)
+/**
+ * @api {post} /user/del 用户删除
+ * @apiName del
+ * @apiGroup User
+ * @apiParam (params) {String} userId 用户id
+ * @apiParam (params) {String} role 当前用户角色
+ * @apiSuccessExample Success-Response:
+ * {
+        code: 1,
+        data: '删除成功',
+    }
+ *
+ * @apiErrorExample {json} Error-Response:
+ * {
+        code: 0,
+        data: '',
+        errMsg: '没有权限'
+    }
+ */
+Router.post('/del', user.del)
+/**
+ * @api {get} /user/inquire 所有用户信息查询
+ * @apiName inquire
+ * @apiGroup User
+ * @apiParam (params) {number} pageNum 查询起始页
+ * @apiParam (params) {number} pageSize 显示条数
+ * @apiDescription 用户信息查询需要管理员权限
+ * @apiHeaderExample {json} Header-Example:
+ * {
+ *    "Authorition": "xxxxxxxxxxxx"
+ *  }
+ * @apiSuccessExample Success-Response:
+ * {
+    "code": 1,
+    "data": {
+        "userLists": [
+            {
+                "role": "1",
+                "avatar": "/avatar/default.jpg",
+                "_id": "5c4c097bb34a92965477502c",
+                "username": "qqq",
+                "password": "b387c9b0483f7daa982a95f72d685fe33fab29d538887a7180957ccedd725d13"
+            },
+            {
+                "role": "1",
+                "avatar": "/avatar/default.jpg",
+                "_id": "5c4c0981b34a92965477502d",
+                "username": "www",
+                "password": "d46cc2563f4edb997cc2c82971d8190ec176e1c7440a2903054a87e2bea1974a"
+            }
+        ],
+        "totalPage": 7
+    }
+}
+ */
+
+Router.get('/inquire', user.inquire)
+
 
 /**
  * @api {post} /user/login 用户登录

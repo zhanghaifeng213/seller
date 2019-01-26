@@ -64,6 +64,73 @@ class User {
       return ctx.body = res;
     })
   }
+  // 用户删除
+  async del(ctx) {
+    const {
+      userId,
+      role
+    } = ctx.request.body;
+    if (role == 0) {
+      await UserModel.findById(userId)
+        .then(data => data.remove())
+        .catch(err => {
+          return ctx.body = {
+            code: 0,
+            data: '',
+            errMsg: '用户删除错误'
+          };
+        })
+      return ctx.body = {
+        code: 1,
+        data: '删除成功',
+      };
+    } else {
+      return ctx.body = {
+        code: 0,
+        data: '',
+        errMsg: '没有权限'
+      };
+    }
+  }
+  // 用户查询
+  async inquire(ctx) {
+    let {
+      pageNum,
+      pageSize,
+    } = ctx.query;
+
+    const maxNum = await UserModel.estimatedDocumentCount((err, num) =>
+      err ? console.log(err) : num
+    )
+    if (pageNum && pageSize) {
+      pageNum--
+      pageNum = parseInt(pageNum)
+      pageSize = parseInt(pageSize)
+      await UserModel.find()
+        .skip(pageNum * pageSize)
+        .limit(pageSize)
+        .then(data => {
+          return ctx.body = {
+            code: 1,
+            data: { userLists: data, totalPage: maxNum }
+          }
+        })
+        .catch(err => {
+          return ctx.body = {
+            code: 0,
+            data: '',
+            message: err
+          }
+        })
+
+    } else {
+      return ctx.body = {
+        code: 0,
+        data: '',
+        message: '请传入分页'
+      }
+    }
+  }
 
   // 用户登录
   async login(ctx, next) {
