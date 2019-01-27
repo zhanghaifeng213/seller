@@ -1,0 +1,10 @@
+<!--about.wxml-->
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">About</view>
+    <view class="page__desc">关注</view>
+  </view>
+  <view class="page__bd">
+    <image bindtap="previewImage" src="../../images/source/weui-wxss.jpg" mode="aspectFit"></image>
+  </view>
+</view>

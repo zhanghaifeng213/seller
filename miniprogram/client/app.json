@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/settings/settings",
+    "pages/menu/menu",
+    "pages/about/about",
+    "pages/login/login",
+    "pages/admin/center",
+    "pages/admin/category",
+    "pages/admin/menu",
+    "pages/admin/user",
+    "pages/admin/personal"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#f8f8f8",
+    "backgroundColor": "#f8f8f8",
+    "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#D3D3D3",
+    "selectedColor": "#233F68",
+    "backgroundColor": "#FFF",
+    "borderStyle": "black",
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "首页",
+      "iconPath": "./images/tabbar/compact_gray.png",
+      "selectedIconPath": "./images/tabbar/compact.png"
+    }, {
+      "pagePath": "pages/settings/settings",
+      "text": "实验室",
+      "iconPath": "./images/tabbar/clock_gray.png",
+      "selectedIconPath": "./images/tabbar/clock.png"
+    }]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 10000,
+    "uploadFile": 10000,
+    "downloadFile": 10000
+  },
+  "debug": true,
+  "plugins": {}
+}
