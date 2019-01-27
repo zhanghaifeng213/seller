@@ -16,42 +16,50 @@ export default new Router({
     {
       path: '/',
       name: 'login',
-      component: login
+      component: login,
+      meta: {requireAuth: false}
     },
     {
       path: '/main',
       name: 'main',
       component: main,
+      meta: {requireAuth: true},
       children: [
         {
           path: '/types',
           name: 'types',
-          component: types
+          component: types,
+          meta: {requireAuth: true}
         },
         {
           path: '/dishes',
           name: 'dishes',
-          component: dishes
+          component: dishes,
+          meta: {requireAuth: true}
         },
         {
           path: '/tables',
           name: 'tables',
-          component: tables
+          component: tables,
+          meta: {requireAuth: true}
         },
         {
           path: '/info',
           name: 'info',
-          component: info
+          component: info,
+          meta: {requireAuth: true}
         },
         {
           path: '/income',
           name: 'income',
-          component: income
+          component: income,
+          meta: {requireAuth: true}
         },
         {
           path: '/records',
           name: 'records',
-          component: records
+          component: records,
+          meta: {requireAuth: true}
         }
       ]
     }
