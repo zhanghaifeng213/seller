@@ -14,7 +14,6 @@ const user = require('../control/user');
  * @apiGroup User
  * @apiParam (params) {String} username 用户名
  * @apiParam (params) {String} password 密码
- * @apiParam (params) {Number} role 用户角色(0 -> 超级管理员； 1 -> 普通)
  * @apiSuccessExample Success-Response:
  * {
         "code": 1,
@@ -34,7 +33,6 @@ Router.post('/reg', user.reg)
  * @apiGroup User
  * @apiParam (params) {String} username 用户名 
  * @apiParam (params) {String} password 用户密码
- * @apiParam (params) {number} role 当前操作人角色
  * @apiParam (params) {String} id 被修改人id
  * @apiSuccessExample Success-Response:
  * {
@@ -55,7 +53,6 @@ Router.post('/update', user.update)
  * @apiName del
  * @apiGroup User
  * @apiParam (params) {String} userId 用户id
- * @apiParam (params) {String} role 当前用户角色
  * @apiSuccessExample Success-Response:
  * {
         code: 1,
@@ -69,7 +66,7 @@ Router.post('/update', user.update)
         errMsg: '没有权限'
     }
  */
-Router.post('/del', user.verifyToken, user.del)
+Router.post('/del', user.del)
 /**
  * @api {get} /user/inquire 所有用户信息查询
  * @apiName inquire
@@ -106,7 +103,7 @@ Router.post('/del', user.verifyToken, user.del)
 }
  */
 
-Router.get('/inquire', user.verifyToken, user.inquire)
+Router.get('/inquire', user.inquire)
 
 
 /**
@@ -135,7 +132,7 @@ Router.get('/inquire', user.verifyToken, user.inquire)
  */
 Router.post('/login', user.login)
 
-Router.get('/upload', user.verifyToken, user.upload)
+Router.get('/upload', user.upload)
 
 /**
  * @api {get} /user/info 用户信息查询
@@ -157,7 +154,7 @@ Router.get('/upload', user.verifyToken, user.upload)
         }
     }
  */
-Router.get('/info', user.verifyToken, user.getinfo)
+Router.get('/info', user.getinfo)
 
 
 module.exports = Router;

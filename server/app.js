@@ -14,8 +14,9 @@ const errorHandle = require('./middlewares/errorHandle'); //错误处理
 const sendHandle = require('./middlewares/sendHandle'); // 数据返回统一处理
 
 const app = new Koa();
-app.use(errorHandle) // 错误处理
+app
   .use(sendHandle()) // 数据返回统一处理
+  .use(errorHandle)
   .use(jwt({
     secret: jwtSecret
   }).unless({
@@ -51,12 +52,32 @@ app.listen(serverPort, () => {
 // 系统初始化操作
 // 1. 创建一个超级管理员用户 admin/admin
 function init() {
-  const request = require('request');
-  request.post(`http://127.0.0.1:${serverPort}/user/reg`, {
-    form: {
-      username: 'admin',
-      password: 'admin',
-      role: 0
+  // const request = require('request');
+  // request.post(`http://127.0.0.1:${serverPort}/user/reg`, {
+  //   form: {
+  //     username: 'admin',
+  //     password: 'admin',
+  //     role: 0
+  //   }
+  // })
+
+  const { db } = require('./Schema/config')
+  const UserSchema = require('./Schema/user')
+  const encrypt = require('./util/encrypt')
+  const User = db.model('users', UserSchema)
+  User.find({ username: "admin" }).then(data => {
+    if (data.length === 0) {
+      new User({
+        username: "admin",
+        password: encrypt("admin"),
+        role: 0,
+      }).save().then(data => {
+        console.log("管理员用户名 -> admin,密码 -> admin")
+      }).catch(err => {
+        console.log("管理员账号检查失败")
+      })
+    } else {
+      console.log('管理员用户名:admin  密码 -> admin')
     }
   })
 }

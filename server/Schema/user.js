@@ -1,5 +1,5 @@
 const { Schema } = require("./config");
-
+const { imagePath } = require('../config/config');
 const UserSchema = new Schema({
   username: String,
   password: String,
@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   },
   avatar: {
     type: String,
-    default: ''
+    default: `${imagePath}/avatar/default.jpg`
   }
 }, { versionKey: false })
 
