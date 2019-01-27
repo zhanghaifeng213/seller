@@ -9,7 +9,7 @@
           <el-input type="password" v-model="loginForm.password"  @keyup.enter.native="login" placeholder="请输入密码"></el-input>
       </el-form-item>
       <el-form-item>
-          <el-button type="primary" class="button col-lg-12" @click="login">登录</el-button>
+          <el-button type="primary" class="button col-lg-12" @click="login('loginForm')">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -19,6 +19,20 @@
 export default {
   name: 'login',
   data () {
+    let checkUser = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入用户名'))
+      } else {
+        callback()
+      }
+    }
+    let checkPass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
         username: '',
@@ -26,18 +40,31 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, trigger: 'blur', validator: checkUser }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
+          { required: true, trigger: 'blur', validator: checkPass }
         ]
       }
     }
   },
   methods: {
-    login () {
-      this.$http.post('/login', this.loginForm).then(res => {
-        console.log(res)
+    login (loginForm) {
+      this.$refs[loginForm].validate((vaild) => {
+        if (vaild) {
+          let param = {
+            'username': this.loginForm.username,
+            'password': this.loginForm.password
+          }
+          this.$store.dispatch('login', param).then(res => {
+            this.$router.push({path: '/main'})
+          }).catch((err) => {
+            console.log(err.response)
+          })
+        } else {
+          console.log('验证失败')
+          return false
+        }
       })
     }
   }
