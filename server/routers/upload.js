@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const Router = require('koa-router')();
-const { imagePath }  = require('../config/config');
+const { imagePath } = require('../Config/config');
 
 /**
  * @api {post} /upload 图片上传
