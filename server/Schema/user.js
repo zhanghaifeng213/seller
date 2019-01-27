@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   },
   avatar: {
     type: String,
-    default: "/avatar/default.jpg"
+    default: ''
   }
 }, { versionKey: false })
 

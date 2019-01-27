@@ -25,18 +25,21 @@
   - [x] 查询(/menu/allList)
   - [x] 根据cid查询(/menu/getListByCid)
 
-## API 返回数据格式
+## API 返回数据说明
 
 ```javascript
-// 正常请求返回 code为1为正常，会有data字段；不为1则为异常，会有一个errMsg字段
-{
-  code: 1,
-  data: ''
-}
+// 401  用户未登录
+// 1  成功
+// 0  业务处理错误
+// -1 参数错误（缺少必填参数）
+// -2 服务器错误
 
 {
-  code: 0,
-  errMsg: '必填参数不能为空', // code不为1的时候, 会有这个字段
+  "code": 1,
+  "data": {
+    "message": "欢迎进入xxx系统. 当前时间: Sun, 27 Jan 2019 07:25:23 GMT."
+  },
+  "msg": "请求成功"
 }
 ```
 

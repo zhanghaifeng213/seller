@@ -1,16 +1,12 @@
-const CategoryModel = require("../Models/category");
-const MenuModel = require("../Models/menu");
-const {
-  verifyToken
-} = require('../middlewares/authHeader');
+const MenuModel = require('../models/menu');
+const CategoryModel = require('../models/category');
 
 class Menu {
   // 添加菜品
   async add(ctx, next) {
     // 登录
-    const user = await verifyToken(ctx, next);
+    const { user } = ctx.state;
     if (!user) return ctx.sendError(401, '请先登录');
-
     const {
       name,
       cid,
@@ -112,7 +108,7 @@ class Menu {
 
   // 删除菜品
   async delete(ctx, next) {
-    const user = await verifyToken(ctx, next);
+    const { user } = ctx.state;
     if (!user) return ctx.sendError(401, '请先登录');
     const {
       id
