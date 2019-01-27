@@ -1,44 +1,42 @@
-const CategoryModel = require("../Models/category");
-const MenuModel = require("../Models/menu");
-
-const {
-  verifyToken
-} = require('../middlewares/authHeader');
+const CategoryModel = require("../models/category");
+const MenuModel = require("../models/menu");
 
 class Category {
   // 添加分类
   async add(ctx, next) {
-    const user = await verifyToken(ctx, next);
-    if (!user) return ctx.sendError(401, '请先登录');
-    const {
-      name,
-      desc = '暂无描述'
-    } = ctx.request.body;
-    if (!name) return ctx.sendError(-1, '参数错误');
+    const { user } = ctx.state;
+    if (user) {
+      const {
+        name,
+        desc = '暂无描述',
+      } = ctx.request.body;
+      if (!name) return ctx.sendError(-1, '参数错误');
 
-    // 添加前检查是否存在
-    const [data] = await CategoryModel.find({
-      name
-    });
-    if (data) return ctx.sendError(0, '当前分类已存在, 请勿重复添加');
-
-    // 添加新的分类
-    const model = new CategoryModel({
-      name,
-      desc,
-      createTime: new Date(),
-      updateTime: new Date()
-    });
-    const result = await model.save();
-    if (result) {
-      ctx.send({
-        name: result.name,
-        desc: result.desc,
-        createTime: result.createTime,
-        categoryId: result.id
-      });
+      const queryResult = await CategoryModel.find({ name });
+      if (queryResult && queryResult.length  === 0) {
+        // 添加新的分类
+        const model = new CategoryModel({
+          name,
+          desc,
+          createTime: new Date(),
+          updateTime: new Date()
+        });
+        const result = await model.save();
+        if (result) {
+          ctx.send({
+            name: result.name,
+            desc: result.desc,
+            createTime: result.createTime,
+            categoryId: result.id
+          });
+        } else {
+          ctx.sendError(-2, '服务器错误');
+        }
+      } else {
+        return ctx.sendError(0, '当前分类已存在, 请勿重复添加');
+      }
     } else {
-      ctx.sendError(-2, '服务器错误');
+      return ctx.sendError(0, '登录信息过期');
     }
   }
 
@@ -107,59 +105,3 @@ class Category {
 
 
 module.exports = new Category();
-
-
-/*
-
-exports.add = async ctx => {
-  if (ctx.session.isNew) {
-    // true 就没登录   就不需要就查询数据库
-    return (ctx.body = {
-      msg: '用户未登录',
-      status: 0
-    })
-  }
-  new Category(data).save().then(data => {
-    ctx.body = {
-      msg: '发表成功',
-      status: 1
-    }
-  })
-    .catch(err => {
-      ctx.body = {
-        msg: '发表失败',
-        status: 0
-      }
-    })
-}
-exports.delete = async ctx => {
-  const _id = ctx.params.id
-  let res = {
-    state: 1,
-    message: '成功'
-  }
-  await Article.findById(_id)
-    .then(data => data.remove())
-    .catch(err => {
-      res = {
-        state: 0,
-        message: err
-      }
-    })
-
-  ctx.body = res
-}
-exports.update = async ctx => {
-  const data = ctx.request.body
-  let res = {
-    state: 1,
-    message: '更新成功'
-  }
-  Category.update({ _id: data.id }, { $inc: { name: data.name } }, err => {
-    if (err) return console.log(err)
-    console.log('更新成功')
-    ctx.body = res
-  })
-}
-
-*/
