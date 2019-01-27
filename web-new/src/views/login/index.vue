@@ -67,6 +67,13 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    if (localStorage.getItem('token')) {
+      this.$router.push({path: '/main'})
+    } else {
+      this.$router.push({path: '/'})
+    }
   }
 }
 </script>

@@ -31,18 +31,19 @@ export default new Vuex.Store({
             'token': token,
             'username': username
           }
-          console.log(username)
           localStorage.setItem('token', token)
           // 添加token到请求头里验证
           axios.defaults.headers.common['Authorization'] = token
           commit('auth_success', payload)
-          console.log(res.data)
           resolve(res)
         }).catch((err) => {
           localStorage.removeItem('token')
           reject(err)
         })
       })
+    },
+    logout ({commit}) {
+      localStorage.removeItem('token')
     }
   }
 })
