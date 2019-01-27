@@ -39,7 +39,6 @@ export default new Vuex.Store({
             console.log(res.data)
             commit('setToken', token)
             localStorage.setItem('token', token)
-            // 添加token到请求头里验证
             resolve(res)
           } else {
             reject()
