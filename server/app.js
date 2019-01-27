@@ -21,7 +21,6 @@ app
     secret: jwtSecret
   }).unless({
     path: [
-      /^\/user\/reg\/?$/i,
       /^\/user\/login\/?$/i,
       /^\/category\/list\/?$/i,
       /^\/menu\/allList\/?$/i,
