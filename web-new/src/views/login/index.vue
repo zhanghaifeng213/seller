@@ -15,94 +15,90 @@
   </div>
 </template>
 <script>
-
+import { mapActions } from "vuex";
 export default {
-  name: 'login',
-  data () {
+  name: "login",
+  data() {
     let checkUser = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入用户名'))
+      if (value === "") {
+        callback(new Error("请输入用户名"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     let checkPass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
+      if (value === "") {
+        callback(new Error("请输入密码"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       rules: {
-        username: [
-          { trigger: 'blur', validator: checkUser }
-        ],
-        password: [
-          { trigger: 'blur', validator: checkPass }
-        ]
+        username: [{ trigger: "blur", validator: checkUser }],
+        password: [{ trigger: "blur", validator: checkPass }]
       }
-    }
+    };
   },
   methods: {
-    showLogin () {
-      this.showReg = false
+    ...mapActions(["handleLogin", "handleUserInfo"]),
+    showLogin() {
+      this.showReg = false;
     },
-    showRegister () {
-      this.showReg = true
+    showRegister() {
+      this.showReg = true;
     },
-    login (loginForm) {
-      this.$refs[loginForm].validate((vaild) => {
+    login(loginForm) {
+      this.$refs[loginForm].validate(vaild => {
         if (vaild) {
           let param = {
-            'username': this.loginForm.username,
-            'password': this.loginForm.password
-          }
-          this.$store.dispatch('login', param).then(res => {
-            if (res.data.code === 1) {
-              this.$message({
-                message: '登录成功',
-                type: 'success'
-              })
-              this.$router.push({path: '/main'})
-            }
-          }).catch((err) => {
-            console.log(err.response)
-          })
+            username: this.loginForm.username,
+            password: this.loginForm.password
+          };
+          this.$store;
+          this.handleLogin(param)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.handleUserInfo().then(res => {
+                  this.$message({
+                    message: "登陆成功",
+                    type: "success"
+                  });
+                  this.$router.push({ name: "main" });
+                });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         } else {
-          console.log('验证失败')
-          return false
+          console.log("验证失败");
+          return false;
         }
-      })
+      });
     }
   },
-  mounted () {
-    if (localStorage.getItem('token')) {
-      this.$router.push({path: '/main'})
-    } else {
-      this.$router.push({path: '/'})
-    }
-  }
-}
+  mounted() {}
+};
 </script>
 
 <style>
-  .login-box{
-    margin: 200px auto;
-  }
-  .title{
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  .el-form-item__error{
-    padding-top: 0;
-  }
-  .el-checkbox {
-    margin: 0 0 20px 50px;
-  }
+.login-box {
+  margin: 200px auto;
+}
+.title {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.el-form-item__error {
+  padding-top: 0;
+}
+.el-checkbox {
+  margin: 0 0 20px 50px;
+}
 </style>

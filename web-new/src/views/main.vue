@@ -12,17 +12,17 @@
   </div>
 </template>
 <script>
-
 export default {
-  name: 'main-index',
+  name: "main-index",
   methods: {
-    logout () {
-      this.$store.dispatch('logout').then(res => {
-        this.$router.push({path: '/'})
-      })
+    logout() {
+      this.$store.dispatch("logout").then(res => {
+        this.$router.push({ path: "/" });
+      });
     }
-  }
-}
+  },
+  mouted() {}
+};
 </script>
 
 <style>

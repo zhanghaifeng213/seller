@@ -14,52 +14,53 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: login,
-      meta: {requireAuth: false}
+      meta: { requireAuth: false }
     },
     {
-      path: '/main',
+      path: '/',
       name: 'main',
+      redirect: { name: 'types' },
       component: main,
-      meta: {requireAuth: true},
+      meta: { requireAuth: true },
       children: [
         {
           path: '/types',
           name: 'types',
           component: types,
-          meta: {requireAuth: true}
+          meta: { requireAuth: true }
         },
         {
           path: '/dishes',
           name: 'dishes',
           component: dishes,
-          meta: {requireAuth: true}
+          meta: { requireAuth: true }
         },
         {
           path: '/tables',
           name: 'tables',
           component: tables,
-          meta: {requireAuth: true}
+          meta: { requireAuth: true }
         },
         {
           path: '/info',
           name: 'info',
           component: info,
-          meta: {requireAuth: true}
+          meta: { requireAuth: true }
         },
         {
           path: '/income',
           name: 'income',
           component: income,
-          meta: {requireAuth: true}
+          meta: { requireAuth: true }
         },
         {
           path: '/records',
           name: 'records',
           component: records,
-          meta: {requireAuth: true}
+          meta: { requireAuth: true }
         }
       ]
     }

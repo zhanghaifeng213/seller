@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import { login, info } from '@/fetch/user'
 
 Vue.use(Vuex)
 
@@ -8,43 +9,67 @@ export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-    username: ''
+    username: '',
+    role: '',
+    avatar: '',
+    id: '',
+    token: ''
   },
   mutations: {
-    auth_request (state) {
+    auth_request(state) {
       state.status = 'lodaing'
     },
-    auth_success (state, payload) {
+    auth_success(state, payload) {
       state.status = 'success'
-      state.token = payload.token
       state.username = payload.username
+      state.role = payload.role
+      state.avatar = payload.avatar
+      state.id = payload.id
+    },
+    setToken(state, val) {
+      state.token = val
     }
   },
   actions: {
-    login ({commit}, user) {
+    handleLogin({ commit }, user) {
       return new Promise((resolve, reject) => {
-        commit('auth_request')
-        axios.post('/login', user).then(res => {
-          const token = res.data.data.token
-          const username = res.data.data.username
-          const payload = {
-            'token': token,
-            'username': username
+        login(user).then(res => {
+          if (res.data.code == 1) {
+            const token = res.data.data
+            console.log(res.data)
+            commit('setToken', token)
+            localStorage.setItem('token', token)
+            // 添加token到请求头里验证
+            resolve(res)
+          } else {
+            reject()
           }
-          localStorage.setItem('token', token)
-          // 添加token到请求头里验证
-          axios.defaults.headers.common['Authorization'] = token
-          commit('auth_success', payload)
-          resolve(res)
         }).catch((err) => {
           localStorage.removeItem('token')
           reject(err)
         })
       })
     },
-    logout ({commit}) {
+    logout({ commit }) {
       localStorage.removeItem('token')
       delete axios.defaults.headers.common['Authorization']
+    },
+    handleUserInfo({ commit }) {
+      return new Promise((resolve, reject) => {
+        info()
+          .then(res => {
+            if (res.data.code == 1) {
+              const data = res.data.data
+              commit('auth_success', data)
+              resolve(data)
+            } else {
+              reject()
+            }
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
     }
   }
 })
