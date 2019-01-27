@@ -44,6 +44,7 @@ export default new Vuex.Store({
     },
     logout ({commit}) {
       localStorage.removeItem('token')
+      delete axios.defaults.headers.common['Authorization']
     }
   }
 })

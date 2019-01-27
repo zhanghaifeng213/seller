@@ -17,6 +17,13 @@ module.exports = {
         pathRewrite: {
           '^/login': ''
         }
+      },
+      '/reg': {
+        target: 'http://116.62.147.91:3030//user/reg',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/reg': ''
+        }
       }
     },
 

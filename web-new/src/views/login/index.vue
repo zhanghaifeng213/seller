@@ -6,7 +6,7 @@
           <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="loginForm.password"  @keyup.enter.native="login" placeholder="请输入密码"></el-input>
+          <el-input type="password" v-model="loginForm.password"  @keyup.enter.native="login('loginForm')" placeholder="请输入密码"></el-input>
       </el-form-item>
       <el-form-item>
           <el-button type="primary" class="button col-lg-12" @click="login('loginForm')">登录</el-button>
@@ -26,6 +26,7 @@ export default {
         callback()
       }
     }
+
     let checkPass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
@@ -40,15 +41,21 @@ export default {
       },
       rules: {
         username: [
-          { required: true, trigger: 'blur', validator: checkUser }
+          { trigger: 'blur', validator: checkUser }
         ],
         password: [
-          { required: true, trigger: 'blur', validator: checkPass }
+          { trigger: 'blur', validator: checkPass }
         ]
       }
     }
   },
   methods: {
+    showLogin () {
+      this.showReg = false
+    },
+    showRegister () {
+      this.showReg = true
+    },
     login (loginForm) {
       this.$refs[loginForm].validate((vaild) => {
         if (vaild) {
@@ -57,7 +64,13 @@ export default {
             'password': this.loginForm.password
           }
           this.$store.dispatch('login', param).then(res => {
-            this.$router.push({path: '/main'})
+            if (res.data.code === 1) {
+              this.$message({
+                message: '登录成功',
+                type: 'success'
+              })
+              this.$router.push({path: '/main'})
+            }
           }).catch((err) => {
             console.log(err.response)
           })
@@ -88,5 +101,8 @@ export default {
   }
   .el-form-item__error{
     padding-top: 0;
+  }
+  .el-checkbox {
+    margin: 0 0 20px 50px;
   }
 </style>

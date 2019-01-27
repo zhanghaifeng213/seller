@@ -29,6 +29,20 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+axios.interceptors.response.use(
+  response => {
+    return response
+  },
+  error => {
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          this.$store.dispatch('logout')
+      }
+    }
+  }
+)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
