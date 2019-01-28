@@ -1,6 +1,6 @@
 const { db } = require('../Schema/config')
 
-const TableSchema = require('../Schema/order')
-const Table = db.model("orders", TableSchema)
+const TableSchema = require('../Schema/table')
+const Table = db.model("tables", TableSchema)
 
 module.exports = Table
