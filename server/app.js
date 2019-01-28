@@ -31,6 +31,7 @@ app
       /^\/?$/i,
       /^\/system\/?$/i,
       /^\/upload\/?$/i,
+      /^\/upload/i,
     ]
   })) // token处理
   .use(logger()) // 日志
