@@ -10,10 +10,10 @@ const Table = require('../control/table');
 
 
 /**
- * @api {post} /table/add 分类添加
+ * @api {post} /table/add 桌号添加
  * @apiName tableAdd
  * @apiGroup Table
- * @apiDescription 添加桌号分类
+ * @apiDescription 添加桌号
  * @apiParam (params) {String} num 桌号
  * @apiHeaderExample {json} Header:
  * {
@@ -35,14 +35,14 @@ const Table = require('../control/table');
 * @apiErrorExample {json} 重复添加
   {
       "code": 0,
-      "errMsg": "当前分类已存在, 请勿重复添加"
+      "errMsg": "当前桌号已存在, 请勿重复添加"
   }
  *
  */
 Router.post("/add", Table.add)
 
 /**
- * @api {get} /table/list 分类列表查询
+ * @api {get} /table/list 桌号查询
  * @apiName tableList
  * @apiGroup Table
  * @apiDescription 所有桌号列表查询
@@ -68,7 +68,7 @@ Router.post("/add", Table.add)
 Router.get("/list", Table.list);
 
 /**
- * @api {post} /category/delete 分类删除
+ * @api {post} /table/delete 桌号删除
  * @apiName tableDelete
  * @apiGroup Table
  * @apiDescription 桌号删除
@@ -80,10 +80,10 @@ Router.get("/list", Table.list);
         "msg": "请求成功"
     }
  *
- * @apiErrorExample 分类不存在
+ * @apiErrorExample 桌号不存在
  * {
         "code": 0,
-        "errMsg": "当前分类不存在"
+        "errMsg": "当前桌号不存在"
     }
  */
 Router.post("/delete", Table.delete)
@@ -93,7 +93,7 @@ Router.post("/delete", Table.delete)
  * @apiName tableUpdate
  * @apiGroup Table
  * @apiDescription
- * @apiParam (params) {String} id 分类id
+ * @apiParam (params) {String} id 桌号id
  * @apiHeaderExample {json} Header:
  * {
  *    "Authorition": "xxxxxxxxxxxx"
@@ -114,7 +114,7 @@ Router.post("/delete", Table.delete)
 * @apiErrorExample {json} 添加失败
   {
       "code": 0,
-      "errMsg": "当前分类已存在"
+      "errMsg": "当前桌号已存在"
   }
  *
  */
