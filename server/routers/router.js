@@ -15,12 +15,12 @@ const home = require('./home'); // 基础API
 const upload = require('./upload'); // 文件上传
 const user = require('./user'); // 用户模块
 const category = require('./category'); // 菜单模块
-// const menu = require('./menu'); // 菜单模块
+const menu = require('./menu'); // 菜单模块
 
 Router.use('/', home.routes(), home.allowedMethods())
 Router.use('/upload', upload.routes(), upload.allowedMethods())
 Router.use('/user', user.routes(), user.allowedMethods())
 Router.use('/category', category.routes(), category.allowedMethods())
-// Router.use('/menu', menu.routes(), menu.allowedMethods())
+Router.use('/menu', menu.routes(), menu.allowedMethods())
 
 module.exports = Router;
