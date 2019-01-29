@@ -8,50 +8,65 @@ import tables from '@/views/main-table-number'
 import info from '@/views/main-info'
 import income from '@/views/mian-income'
 import records from '@/views/main-order-record'
-
+import order from '@/views/main-order'
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'login',
-      component: login
+      component: login,
+      meta: { requireAuth: false }
     },
     {
-      path: '/main',
+      path: '/',
       name: 'main',
+      redirect: { name: 'types' },
       component: main,
+      meta: { requireAuth: true },
       children: [
         {
           path: '/types',
           name: 'types',
-          component: types
+          component: types,
+          meta: { requireAuth: true }
         },
         {
           path: '/dishes',
           name: 'dishes',
-          component: dishes
+          component: dishes,
+          meta: { requireAuth: true }
         },
         {
           path: '/tables',
           name: 'tables',
-          component: tables
+          component: tables,
+          meta: { requireAuth: true }
         },
         {
           path: '/info',
           name: 'info',
-          component: info
+          component: info,
+          meta: { requireAuth: true }
         },
         {
           path: '/income',
           name: 'income',
-          component: income
+          component: income,
+          meta: { requireAuth: true }
         },
         {
           path: '/records',
           name: 'records',
-          component: records
+          component: records,
+          meta: { requireAuth: true }
+        },
+        {
+          path: '/order',
+          name: 'order',
+          component: order,
+          meta: { requireAuth: true }
         }
       ]
     }

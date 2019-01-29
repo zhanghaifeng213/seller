@@ -10,17 +10,18 @@ import seller from 'components/seller/seller';
 import 'common/stylus/index.styl';
 Vue.use(VueRouter);
 Vue.use(VueResource);
+window.eventBus = new Vue()
 var router = new VueRouter({
-    linkActiveClass: 'active',
-      routes: [
-        { path: '/', redirect: '/goods' },
-        { path: '/goods', component: goods },
-        { path: '/ratings', component: ratings },
-        { path: '/seller', component: seller }
-      ]
+  linkActiveClass: 'active',
+  routes: [
+    { path: '/', redirect: '/goods' },
+    { path: '/goods', component: goods },
+    { path: '/ratings', component: ratings },
+    { path: '/seller', component: seller }
+  ]
 });
 new Vue({
-    router,
-    render: h => h(App)
+  router,
+  render: h => h(App)
 }).$mount('#app');
 

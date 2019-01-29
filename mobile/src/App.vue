@@ -20,8 +20,9 @@
     </div>
     <div class="scan" v-else>
       <div id="bcid" v-if="!show">
+        <button @click="cancelScan">返回</button>
       </div>
-      <footer v-if="!show">
+      <!-- <footer v-if="!show">
         <img :src="avatar" width="170" height="128">
         
         <div class="title" v-show="!show">
@@ -33,10 +34,10 @@
           扫描桌上二维码进行点餐
         </div>
         <button @click="startRecognize" v-show="!show">扫码点餐</button>
-        <!-- <button @click="startScan">2.开始扫描</button>
+        <button @click="startScan">2.开始扫描</button>
         <button @click="cancelScan">3.结束扫描</button>
-        <button @click="closeScan">4.关闭控件</button> -->
-      </footer>
+        <button @click="closeScan">4.关闭控件</button>
+      </footer> -->
     </div>
   </div>
 </template>
@@ -58,21 +59,28 @@ export default {
       },
       codeUrl: "",
       scan: null,
-      show: false
+      show: true
     };
   },
   created() {
     this.seller = Object.assign({}, this.seller, data().seller);
+    eventBus.$on("passCode", () => {
+      console.log(this.startRecognize);
+      this.startRecognize();
+    });
   },
   methods: {
     // 创建扫描控件
     startRecognize() {
+      this.show = false;
+      this.$nextTick(() => {
+        if (!window.plus) return;
+        // eslint-disable-next-line
+        this.scan = new plus.barcode.Barcode("bcid");
+        this.scan.onmarked = onmarked;
+        this.scan.start();
+      });
       let that = this;
-      if (!window.plus) return;
-      // eslint-disable-next-line
-      this.scan = new plus.barcode.Barcode("bcid");
-      this.scan.onmarked = onmarked;
-
       function onmarked(type, result, file) {
         switch (type) {
           // eslint-disable-next-line
@@ -107,23 +115,24 @@ export default {
           that.scan.start();
         }
       }
-      this.scan.start();
-    }
+    },
     // 开始扫描
     // startScan() {
     //   if (!window.plus) return;
     //   this.scan.start();
     // },
-    // // 关闭扫描
-    // cancelScan() {
-    //   if (!window.plus) return;
-    //   this.scan.cancel();
-    // },
-    // // 关闭条码识别控件
-    // closeScan() {
-    //   if (!window.plus) return;
-    //   this.scan.close();
-    // }
+    // 关闭扫描
+    cancelScan() {
+      if (!window.plus) return;
+      this.scan.cancel();
+      this.scan.close();
+      this.show = true;
+    },
+    // 关闭条码识别控件
+    closeScan() {
+      if (!window.plus) return;
+      this.scan.close();
+    }
   },
   components: {
     vHeader
@@ -171,7 +180,20 @@ export default {
   bottom: 0;
   text-align: center;
   color: #fff;
-  background: #ddd;
+  background: #fff;
+  z-index: -10;
+}
+#bcid > button {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 5px 20px;
+  background: #17b3a3;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
 }
 footer {
   position: absolute;
