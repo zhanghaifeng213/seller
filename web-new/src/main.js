@@ -18,14 +18,14 @@ Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
     if (token) {
-      next();
+      next()
     } else {
-      next('/login');
+      next('/login')
     }
   } else {
-    next();
+    next()
   }
 })
 

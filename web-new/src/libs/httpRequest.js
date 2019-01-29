@@ -15,9 +15,9 @@ const http = axios.create({
  * 请求拦截
  */
 http.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  config.headers.common['Authorization'] = 'Bearer ' + token;
-  return config;
+  const token = localStorage.getItem('token')
+  config.headers.common['Authorization'] = 'Bearer ' + token
+  return config
 })
 
 /**

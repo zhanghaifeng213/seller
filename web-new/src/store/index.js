@@ -12,29 +12,28 @@ export default new Vuex.Store({
     username: '',
     role: '',
     avatar: '',
-    id: '',
-    token: ''
+    id: ''
   },
   mutations: {
-    auth_request(state) {
+    auth_request (state) {
       state.status = 'lodaing'
     },
-    auth_success(state, payload) {
+    auth_success (state, payload) {
       state.status = 'success'
       state.username = payload.username
       state.role = payload.role
       state.avatar = payload.avatar
       state.id = payload.id
     },
-    setToken(state, val) {
+    setToken (state, val) {
       state.token = val
     }
   },
   actions: {
-    handleLogin({ commit }, user) {
+    handleLogin ({ commit }, user) {
       return new Promise((resolve, reject) => {
         login(user).then(res => {
-          if (res.data.code == 1) {
+          if (res.data.code === 1) {
             const token = res.data.data
             console.log(res.data)
             commit('setToken', token)
@@ -42,7 +41,7 @@ export default new Vuex.Store({
             // 添加token到请求头里验证
             resolve(res)
           } else {
-            reject()
+            resolve(false)
           }
         }).catch((err) => {
           localStorage.removeItem('token')
@@ -50,20 +49,20 @@ export default new Vuex.Store({
         })
       })
     },
-    logout({ commit }) {
+    logout ({ commit }) {
       localStorage.removeItem('token')
       delete axios.defaults.headers.common['Authorization']
     },
-    handleUserInfo({ commit }) {
+    handleUserInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         info()
           .then(res => {
-            if (res.data.code == 1) {
+            if (res.data.code === 1) {
               const data = res.data.data
               commit('auth_success', data)
               resolve(data)
             } else {
-              reject()
+              resolve(false)
             }
           })
           .catch(err => {
