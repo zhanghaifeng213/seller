@@ -22,8 +22,10 @@ Page({
     }]
   },
   onLoad(option) {
-    const { num } = option;
-    if(num) {
+    const {
+      num
+    } = option;
+    if (num) {
       wx.navigateTo({
         url: `/pages/menu/menu?id=${num}`
       })
@@ -31,8 +33,12 @@ Page({
   },
   onShow() {},
   viewInfo: function (e) {
-    const { url } = e.currentTarget.dataset.item;
-    if (url) wx.navigateTo({ url });
+    const {
+      url
+    } = e.currentTarget.dataset.item;
+    if (url) wx.navigateTo({
+      url
+    });
   },
   // 选择桌号去点单
   selectNumber() {
@@ -50,8 +56,16 @@ Page({
   },
   // 管理员登录
   adminLogin() {
-    wx.navigateTo({
-      url: '/pages/admin/center'
+    wx.showModal({
+      title: '温馨提示',
+      content: `此功能仅对管理员开放，是否继续?`,
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: '/pages/admin/center'
+          })
+        } else if (res.cancel) {}
+      }
     })
   }
 });

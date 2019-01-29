@@ -8,6 +8,12 @@
   <view class="page__bd">
     <view class="weui-cells__title">类别名称</view>
     <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell icon-operate-cell">
+        <view class="weui-cell weui-cell_link" hidden="{{isAdding}}" bindtap="switchAddState">
+          <view class="weui-cell__bd">+ 添加更多</view>
+        </view>
+      </view>
+
       <!-- 类别列表 -->
       <view class="weui-cell icon-operate-cell" wx:for="{{category}}" wx:key="{{index}}">
         <view class="weui-cell__bd">{{item.name}}</view>
@@ -33,10 +39,9 @@
           <image src="../../images/checked.png" mode="aspectFit" />
         </view>
       </view>
-      <view class="weui-cell weui-cell_link" hidden="{{isAdding}}" bindtap="switchAddState">
-        <view class="weui-cell__bd">+ 添加更多</view>
-      </view>
+
     </view>
+
   </view>
 
 </view>
@@ -47,7 +52,7 @@
 <view class="layer-edit {{isEditting? 'show' : ''}}">
   <view class="title-text">输入修改后的分类名称</view>
   <view class="desc-text" wx:if="{{editItem}}">原分类名: {{editItem.name}}</view>
-  <input class="input-line" type="text" placeholder="输入分类名称" data-type="edit" bindinput="inputCategory" value="{{editCategory}}"/>
+  <input class="input-line" type="text" placeholder="输入分类名称" data-type="edit" bindinput="inputCategory" value="{{editCategory}}" />
   <view class="btns">
     <button class="weui-btn" type="default" bindtap="cancelEdit">取消</button>
     <button class="weui-btn" type="primary" bindtap="confirmEdit">修改</button>
