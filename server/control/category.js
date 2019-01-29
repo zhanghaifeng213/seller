@@ -63,7 +63,7 @@ class Category {
 
   // 删除分类
   async delete(ctx, next) {
-    const user = await verifyToken(ctx, next);
+    const { user } = ctx.state;
     if (!user) return ctx.sendError(401, '请先登录');
     const { id } = ctx.request.body;
     if (!id) return ctx.sendError(-1, '参数错误');
@@ -82,7 +82,7 @@ class Category {
   }
 
   async update(ctx, next) {
-    const user = await verifyToken(ctx, next);
+    const { user } = ctx.state;
     if (!user) return ctx.sendError(401, '请先登录');
     const { id, name } = ctx.request.body;
     if (!id || !name) return ctx.sendError(-1, '参数错误');

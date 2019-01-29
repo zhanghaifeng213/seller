@@ -7,7 +7,10 @@ Page({
     type: 'login', // login | reg
     isAgree: true,
   },
-  onLoad() {
+  onLoad(options) {
+    let { pageback } = options;
+    if (pageback) this.pageback = decodeURIComponent(pageback);
+
     this.username = '';
     this.pwd = '';
   },
@@ -56,7 +59,7 @@ Page({
             title: '登录成功'
           })
           wx.redirectTo({
-            url: '/pages/admin/center'
+            url: this.pageback ? this.pageback : '/pages/admin/center'
           })
         } catch (e) {
           console.error('存储异常');

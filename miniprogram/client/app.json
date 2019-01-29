@@ -8,6 +8,7 @@
     "pages/admin/center",
     "pages/admin/category",
     "pages/admin/menu",
+    "pages/admin/menu_edit",
     "pages/admin/user",
     "pages/admin/personal"
   ],

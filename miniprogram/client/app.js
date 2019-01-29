@@ -12,7 +12,13 @@ const myFetch = new Fetch({
     // 状态码统一处理
     if (httpStatusCode === 200) {
       return true;
-    } else {
+    } else if (httpStatusCode === 401) {
+      const pages = getCurrentPages();
+      const path = encodeURIComponent(`/${pages[pages.length - 1].route}`);
+      return wx.navigateTo({
+        url: `/pages/login/login?pageback=${path}`
+      })
+    }else {
       wx.showToast({
         title: '服务器错误',
         icon: 'none',

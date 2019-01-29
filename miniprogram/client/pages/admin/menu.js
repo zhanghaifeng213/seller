@@ -4,18 +4,45 @@ const app = getApp();
 
 Page({
   data: {
-    panal: [
-      { url: '', text: '分类管理' },
-      { url: '', text: '菜品管理' },
-    ]
+    menus: [], // 菜单列表
+  },
+  onShow() {
+    this.getMenuList();
   },
   onLoad() {
+    // this.setData({
+    //   menus: [{
+    //     id: '21345y4365',
+    //     name: '红烧牛肉面',
+    //     price: '28.00',
+    //   }]
+    // })
   },
-  // 跳转
-  navigateTo(event) {
-    const { url } = event.currentTarget.dataset;
+  // 获取菜单列表
+  getMenuList() {
+    wx.fetch({
+      url: apis.menuList,
+    }).then(res => {
+      if (+res.code === 1) {
+        this.setData({
+          menus: res.data.list
+        })
+      } else {
+        console.log('error');
+      }
+    })
+  },
+  // 添加 or 编辑
+  toEdit(event) {
+    const {
+      item
+    } = event.currentTarget.dataset;
+    let params = '';
+    if (item && item.id) {
+      params = `?item=${encodeURIComponent(JSON.stringify(item))}`
+    }
     wx.navigateTo({
-      url
+      url: `/pages/admin/menu_edit${params}`
     })
   }
 })
