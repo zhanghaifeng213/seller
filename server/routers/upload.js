@@ -3,12 +3,12 @@
  * @Author: Edwin
  * @Date: 2019-01-27 15:19:31
  * @Last Modified by: Edwin
- * @Last Modified time: 2019-01-27 16:23:51
+ * @Last Modified time: 2019-01-29 20:37:04
  */
 const fs = require('fs');
 const path = require('path');
 const Router = require('koa-router')();
-const { imagePath } = require('../Config/config');
+const { imagePath } = require('../config/config');
 
 /**
  * @api {post} /upload 图片上传

@@ -1,5 +1,5 @@
-// const API_DEV = 'http://116.62.147.91:3030'
-const API_DEV = 'http://127.0.0.1:3030';
+const API_DEV = 'http://116.62.147.91:3030'
+// const API_DEV = 'http://127.0.0.1:3030';
 // const API_DEV = 'http://192.168.0.198:3030';
 
 const apis = {

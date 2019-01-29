@@ -3,7 +3,7 @@
  * @Author: Edwin
  * @Date: 2019-01-24 23:44:32
  * @Last Modified by: Edwin
- * @Last Modified time: 2019-01-26 18:21:25
+ * @Last Modified time: 2019-01-29 20:56:10
  */
 const Router = require('koa-router')();
 const Menu = require('../control/menu');
@@ -18,7 +18,7 @@ const Menu = require('../control/menu');
  * @apiParam (params) {String} cid 菜品分类id
  * @apiParam (params) {String} price 价格
  * @apiParam (params) {String} [desc='暂无描述'] 分类描述
- * @apiParam (params) {String} [desc='暂无描述'] 分类描述
+ * @apiParam (params) {String} [img='/img/default.jpg'] 菜品图片
  * @apiHeaderExample {json} Header:
  * {
  *    "Authorition": "xxxxxxxxxxxx"
@@ -49,6 +49,8 @@ Router.post("/add", Menu.add)
  * @apiName menuList
  * @apiGroup Menu
  * @apiDescription 所有菜品查询
+ * @apiParam (params) {Number} [pageNum = 1]  页数
+ * @apiParam (params) {Number} [pageSize = 10] 每页显示条数
  * @apiSuccessExample 成功
  * {
     "code": 1,
@@ -84,6 +86,8 @@ Router.get("/allList", Menu.allList);
  * @apiName getListByCid
  * @apiGroup Menu
  * @apiDescription 所有菜品查询
+ * @apiParam (params) {Number} [pageNum = 1]  页数
+ * @apiParam (params) {Number} [pageSize = 10] 每页显示条数
  * @apiSuccessExample 成功
  * {
     "code": 1,

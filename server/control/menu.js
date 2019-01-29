@@ -1,11 +1,17 @@
 const MenuModel = require('../models/menu');
 const CategoryModel = require('../models/category');
 
+const {
+  imagePath
+} = require('../config/config');
+
 class Menu {
   // 添加菜品
   async add(ctx, next) {
     // 登录
-    const { user } = ctx.state;
+    const {
+      user
+    } = ctx.state;
     if (!user) return ctx.sendError(401, '请先登录');
     const {
       name,
@@ -36,7 +42,7 @@ class Menu {
       cid,
       price: price || 0,
       desc: desc || '暂无描述',
-      img: img || '/avatar/default.jpg'
+      img: img || `${imagePath}/img/default.jpg`
     });
     const addResult = await model.save();
     if (addResult) {
@@ -50,65 +56,71 @@ class Menu {
 
   // 获取所有菜列表
   async allList(ctx, next) {
-    const result = await MenuModel.find();
-    if (result) {
-      ctx.send({
-        list: result.map(item => {
-          return {
-            id: item.id,
-            cid: item.cid,
-            name: item.name,
-            desc: item.desc,
-            price: item.price,
-            img: item.img,
-            createTime: item.createTime,
-            updateTime: item.updateTime
-          }
-        }),
-        total: result.length
+    let {
+      pageNum = 1, pageSize = 10
+    } = ctx.query;
+    const maxNum = await MenuModel.find().count();
+    pageNum--;
+    pageNum = parseInt(pageNum)
+    pageSize = parseInt(pageSize)
+    await MenuModel.find()
+      .skip(pageNum * pageSize)
+      .limit(pageSize)
+      .then(data => {
+        return ctx.send({
+          list: data,
+          totalPage: maxNum
+        })
       })
-    } else {
-      ctx.send({
-        list: []
+      .catch(err => {
+        if (err && !err.reason) {
+          return ctx.send({
+            list: [],
+            totalPage: 0
+          })
+        }
+        return ctx.sendError('000002');
       })
-    }
   }
 
   // 获取所有菜列表
   async getListByCid(ctx, next) {
-    const {
-      cid
+    let {
+      cid,
+      pageNum = 1,
+      pageSize = 10
     } = ctx.request.query;
+
     if (!cid) return ctx.sendError(-1, '缺少必填参数');
-    const result = await MenuModel.find({
-      cid
-    });
-    if (result) {
-      ctx.send({
-        cid,
-        list: result.map(item => {
-          return {
-            id: item.id,
-            name: item.name,
-            desc: item.desc,
-            price: item.price,
-            img: item.img,
-            createTime: item.createTime,
-            updateTime: item.updateTime
-          }
-        }),
-        total: result.length
+    const maxNum = await MenuModel.find({ cid }).count();
+    pageNum--;
+    pageNum = parseInt(pageNum)
+    pageSize = parseInt(pageSize)
+    await MenuModel.find({ cid })
+      .skip(pageNum * pageSize)
+      .limit(pageSize)
+      .then(data => {
+        return ctx.send({
+          list: data,
+          totalPage: maxNum
+        })
+      }).catch(err => {
+        console.log(err);
+        if (err && !err.reason) {
+          return ctx.send({
+            list: [],
+            totalPage: 0
+          })
+        }
+        return ctx.sendError('000002');
       })
-    } else {
-      ctx.send({
-        list: []
-      })
-    }
   }
 
   // 删除菜品
   async delete(ctx, next) {
-    const { user } = ctx.state;
+    const {
+      user
+    } = ctx.state;
     if (!user) return ctx.sendError(401, '请先登录');
     const {
       id
@@ -159,7 +171,7 @@ class Menu {
       name,
       price,
       desc,
-      img,
+      img: img || `${imagePath}/img/default.jpg`,
       updateTime: new Date()
     };
     const updateResult = await MenuModel.updateOne({
