@@ -1,16 +1,14 @@
 <template>
-  <div id="app">
-    <router-view/>
-  </div>
+    <main class="wrap-main"></main>
 </template>
 <script>
-
 export default {
-  name: 'App'
+
 }
 </script>
-
 <style lang="less" scoped>
-
+    .wrap-main{
+        padding:15px;
+    }
 </style>
 
