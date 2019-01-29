@@ -16,8 +16,9 @@ export default {
   name: "main-index",
   methods: {
     logout() {
-      this.$store.dispatch("logout").then(res => {
-        this.$router.push({ path: "/" });
+      this.$store.dispatch("logout").then(() => {
+        console.log('push')
+        this.$router.push({ path: "/login" })
       });
     }
   },
