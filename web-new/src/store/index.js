@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import { login, info } from '@/fetch/user'
+import { getTypeInfo } from '@/fetch/types'
+import { addTypesList, deleteType } from '../fetch/types'
 
 Vue.use(Vuex)
 
@@ -16,25 +18,25 @@ export default new Vuex.Store({
     token: ''
   },
   mutations: {
-    auth_request(state) {
+    auth_request (state) {
       state.status = 'lodaing'
     },
-    auth_success(state, payload) {
+    auth_success (state, payload) {
       state.status = 'success'
       state.username = payload.username
       state.role = payload.role
       state.avatar = payload.avatar
       state.id = payload.id
     },
-    setToken(state, val) {
+    setToken (state, val) {
       state.token = val
     }
   },
   actions: {
-    handleLogin({ commit }, user) {
+    handleLogin ({ commit }, user) {
       return new Promise((resolve, reject) => {
         login(user).then(res => {
-          if (res.data.code == 1) {
+          if (res.data.code === 1) {
             const token = res.data.data
             console.log(res.data)
             commit('setToken', token)
@@ -49,11 +51,14 @@ export default new Vuex.Store({
         })
       })
     },
-    logout({ commit }) {
-      localStorage.removeItem('token')
-      delete axios.defaults.headers.common['Authorization']
+    logout ({ commit }) {
+      return new Promise((resolve, reject) => {
+        localStorage.removeItem('token')
+        delete axios.defaults.headers.common['Authorization']
+        resolve()
+      })
     },
-    handleUserInfo({ commit }) {
+    handleUserInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         info()
           .then(res => {
@@ -68,6 +73,44 @@ export default new Vuex.Store({
           .catch(err => {
             reject(err)
           })
+      })
+    },
+    handleGetTypeInfo ({commit}) {
+      return new Promise((resolve, reject) => {
+        getTypeInfo().then(res => {
+          if (res.data.code === 1) {
+            const data = res.data.data
+            resolve(data)
+          }
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleAddTypesList ({ commit }, list) {
+      const typeslist = {}
+      typeslist.name = list.name
+      if (list.desc) {
+        typeslist.desc = list.desc
+      }
+      return new Promise((resolve, reject) => {
+        addTypesList(typeslist).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleDeleteType ({commit}, id) {
+      const itemId = {}
+      itemId.id = id
+      console.log(itemId)
+      return new Promise((resolve, reject) => {
+        deleteType(itemId).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
       })
     }
   }
