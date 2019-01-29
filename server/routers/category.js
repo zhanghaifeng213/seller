@@ -75,7 +75,7 @@ Router.post("/add", Category.add)
 Router.get("/list", Category.list);
 
 /**
- * @api {post} /category/list 分类删除
+ * @api {post} /category/delete 分类删除
  * @apiName categoryDelete
  * @apiGroup Category
  * @apiDescription 分类删除
@@ -96,7 +96,7 @@ Router.get("/list", Category.list);
 Router.post("/delete", Category.delete)
 
 /**
- * @api {post} /category/add 分类修改
+ * @api {post} /category/update 分类修改
  * @apiName categoryUpdate
  * @apiGroup Category
  * @apiDescription
