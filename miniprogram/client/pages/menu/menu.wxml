@@ -1,10 +1,11 @@
 <!--about.wxml-->
 <view class="page">
   <view class="page__hd">
-    <view class="page__title">About</view>
-    <view class="page__desc">点单</view>
+    <view class="page__title">点单</view>
+    <view class="page__desc">Order Food</view>
   </view>
   <view class="page__bd">
-    <image bindtap="previewImage" src="../../images/source/weui-wxss.jpg" mode="aspectFit"></image>
+    点餐主页
+    <!-- <image bindtap="previewImage" src="../../images/source/weui-wxss.jpg" mode="aspectFit"></image> -->
   </view>
 </view>
