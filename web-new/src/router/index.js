@@ -8,7 +8,7 @@ import tables from '@/views/main-table-number'
 import info from '@/views/main-info'
 import income from '@/views/mian-income'
 import records from '@/views/main-order-record'
-
+import order from '@/views/main-order'
 Vue.use(Router)
 
 export default new Router({
@@ -60,6 +60,12 @@ export default new Router({
           path: '/records',
           name: 'records',
           component: records,
+          meta: { requireAuth: true }
+        },
+        {
+          path: '/order',
+          name: 'order',
+          component: order,
           meta: { requireAuth: true }
         }
       ]

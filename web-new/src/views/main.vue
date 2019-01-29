@@ -1,19 +1,28 @@
 <template>
-  <div>
-    main
+  <div class="main">
+    <main-navbar />
+    <main-sidebar />
+    <div class="wrap-content">
+      <main-content />
+       
+    </div>
+   
     <div @click="logout">logout</div>
-    <router-link :to="{name: 'types'}">types</router-link>
-    <router-link :to="{name: 'dishes'}">dishes</router-link>
-    <router-link :to="{name: 'tables'}">tables</router-link>
-    <router-link :to="{name: 'info'}">info</router-link>
-    <router-link :to="{name: 'income'}">income</router-link>
-    <router-link :to="{name: 'records'}">records</router-link>
-    <router-view></router-view>
+
+   
   </div>
 </template>
 <script>
+import MainNavbar from "./main-navbar";
+import MainSidebar from "./main-sidebar";
+import MainContent from "./main-content";
 export default {
   name: "main-index",
+  components: {
+    MainNavbar,
+    MainSidebar,
+    MainContent
+  },
   methods: {
     logout() {
       this.$store.dispatch("logout").then(res => {
@@ -25,5 +34,17 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.main {
+  height: 100vh;
+  .wrap-content {
+    padding-top: 50px;
+    margin-left: 230px;
+    min-height: 100%;
+    background: #f1f4f5;
+    width: calc(100vw - 230px);
+    height: calc(100vh - 50px);
+    padding: 65px 15px 15px 15px;
+  }
+}
 </style>
