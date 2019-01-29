@@ -1,0 +1,8 @@
+{
+	"cloudfunctionRoot": "cloud-functions/",
+	"setting": {
+		"newFeature": true
+	},
+	"appid": "wx3ba6719de408b785",
+	"condition": {}
+}

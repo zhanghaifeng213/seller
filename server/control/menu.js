@@ -137,7 +137,7 @@ class Menu {
       desc,
       img
     } = ctx.request.body;
-    if (!id || !name || !cid || !price || !desc || !img) return ctx.sendError(-1, '缺少必填参数');
+    if (!id || !name || !cid || !price || !desc) return ctx.sendError(-1, '缺少必填参数');
 
     const queryResult = await MenuModel.findOne({
       id,
