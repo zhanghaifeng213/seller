@@ -35,93 +35,102 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  name: 'main-types',
+  name: "main-types",
   data() {
     return {
-      addList:{
-        name: '',
-        desc: ''
+      addList: {
+        name: "",
+        desc: ""
       },
-      menuList:[{name:'小红',desc:"小绿",showEdit: false}]
-    }
+      menuList: [{ name: "小红", desc: "小绿", showEdit: false }]
+    };
   },
   methods: {
-    ...mapActions(["handleAddTypesList", 'handleDeleteType']),
+    ...mapActions(["handleAddTypesList", "handleDeleteType"]),
     handleEdit(index, row) {
-      row.showEdit = true
+      row.showEdit = true;
     },
     handleFinish(index, row) {
-      row.showEdit = false
+      row.showEdit = false;
     },
     handleDelete(index, row) {
-      this.$confirm(`是否删除 "${row.name}" 这一分类`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.handleDeleteType(row.id).then(res => {
-          if (res.data.code === 1) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-          } else {
-            this.$message({
-              message: '警告哦，这是一条警告消息',
-              type: 'warning'
-            })
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })       
+      this.$confirm(`是否删除 "${row.name}" 这一分类`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          this.handleDeleteType(row.id).then(res => {
+            if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            } else {
+              this.$message({
+                message: "警告哦，这是一条警告消息",
+                type: "warning"
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     addTypesList() {
       if (!this.addList.name) {
-        this.$message.error('请输入分类名')
-        return
+        this.$message.error("请输入分类名");
+        return;
       }
       this.handleAddTypesList(this.addList)
-      .then(res => {
-        if (res.data.code === 1) {
-          this.$message({
-            message: "添加成功",
-            type: "success"
-          })
+        .then(res => {
+          if (res.data.code === 1) {
+            this.$message({
+              message: "添加成功",
+              type: "success"
+            });
 
-          // 添加成功后重新请求一次内容
-          this.$store.dispatch('handleGetTypeInfo').then(res => {
-            this.menuList = res.list
-          }).catch(err => {
-            console.log(err.response)
-          })
-        } else if (res.data.code === 0) {
-          this.$message.error(res.data.errMsg)
-        } else if (res.data.code === -1) {
-          this.$message.error(res.data.errMsg)
-        }
-      }).catch(err => {
-        console.log(err.response)
-      })
+            // 添加成功后重新请求一次内容
+            this.$store
+              .dispatch("handleGetTypeInfo")
+              .then(res => {
+                this.menuList = res.list;
+              })
+              .catch(err => {
+                console.log(err.response);
+              });
+          } else if (res.data.code === 0) {
+            this.$message.error(res.data.errMsg);
+          } else if (res.data.code === -1) {
+            this.$message.error(res.data.errMsg);
+          }
+        })
+        .catch(err => {
+          console.log(err.response);
+        });
     },
     onSubmit() {
-      this.addTypesList()
+      this.addTypesList();
     }
   },
   mounted() {
-    this.$store.dispatch('handleGetTypeInfo').then(res => {
-      this.menuList = res.list
-      this.menuList.forEach(item => {
-        item.showEdit = false
+    this.$store
+      .dispatch("handleGetTypeInfo")
+      .then(res => {
+        res.list.forEach(item => {
+          item.showEdit = false;
+        });
+        this.menuList = res.list;
       })
-    }).catch(err => {
-      console.log(err.response)
-    })
+      .catch(err => {
+        console.log(err.response);
+      });
   }
-}
+};
 </script>
 
 <style>
