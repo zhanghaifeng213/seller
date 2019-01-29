@@ -8,11 +8,22 @@
   <view class="page__bd">
     <view class="weui-cells__title">类别名称</view>
     <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell icon-operate-cell">
-        <view class="weui-cell weui-cell_link" hidden="{{isAdding}}" bindtap="switchAddState">
-          <view class="weui-cell__bd">+ 添加更多</view>
+      <!-- 添加新分类 -->
+      <view class="weui-cell weui-cell_input icon-operate-cell" hidden="{{!isAdding}}">
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请输入新类别名称" data-type="add" bindinput="inputCategory" value="{{newCategory}}" />
+        </view>
+        <view class="icon-operate cancel" bindtap="cancelAdd">
+          <image src="../../images/cancel.png" mode="aspectFit" />
+        </view>
+        <view class="icon-operate confirm" bindtap="confirmAdd">
+          <image src="../../images/checked.png" mode="aspectFit" />
         </view>
       </view>
+      <view class="weui-cell weui-cell_link" hidden="{{isAdding}}" bindtap="switchAddState">
+        <view class="weui-cell__bd">+ 添加更多</view>
+      </view>
+      <!-- End 添加新分类 -->
 
       <!-- 类别列表 -->
       <view class="weui-cell icon-operate-cell" wx:for="{{category}}" wx:key="{{index}}">
@@ -26,24 +37,9 @@
           <image src="../../images/garbage_gray.png" mode="aspectFit" />
         </view>
       </view>
-
-      <!-- 添加新分类 -->
-      <view class="weui-cell weui-cell_input icon-operate-cell" hidden="{{!isAdding}}">
-        <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入新类别名称" data-type="add" bindinput="inputCategory" value="{{newCategory}}" />
-        </view>
-        <view class="icon-operate cancel" bindtap="cancelAdd">
-          <image src="../../images/cancel.png" mode="aspectFit" />
-        </view>
-        <view class="icon-operate confirm" bindtap="confirmAdd">
-          <image src="../../images/checked.png" mode="aspectFit" />
-        </view>
-      </view>
-
+      <!-- End 类别列表 -->
     </view>
-
   </view>
-
 </view>
 
 
