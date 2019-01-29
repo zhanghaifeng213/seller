@@ -112,6 +112,7 @@ export default {
     getTypes () {
       types().then(
         res => {
+          console.log(res)
           const {code, data} = res.data
           if (code  === 1) {
             this.typeList = data.list
