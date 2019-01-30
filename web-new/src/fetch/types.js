@@ -22,3 +22,11 @@ export const deleteType = (data) => {
     data: data
   })
 }
+
+export const updataType = (data) => {
+  return http({
+    url: http.adornUrl('/category/update'),
+    method: 'post',
+    data: data
+  })
+}

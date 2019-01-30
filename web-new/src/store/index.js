@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import { login, info } from '@/fetch/user'
 import { getTypeInfo } from '@/fetch/types'
-import { addTypesList, deleteType } from '../fetch/types'
+import { addTypesList, deleteType, updataType } from '../fetch/types'
 
 Vue.use(Vuex)
 
@@ -38,7 +38,6 @@ export default new Vuex.Store({
         login(user).then(res => {
           if (res.data.code === 1) {
             const token = res.data.data
-            console.log(res.data)
             commit('setToken', token)
             localStorage.setItem('token', token)
             resolve(res)
@@ -104,9 +103,18 @@ export default new Vuex.Store({
     handleDeleteType ({commit}, id) {
       const itemId = {}
       itemId.id = id
-      console.log(itemId)
       return new Promise((resolve, reject) => {
         deleteType(itemId).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleUpdataType ({commit}, data) {
+      return new Promise((resolve, reject) => {
+        console.log(data)
+        updataType(data).then(res => {
           resolve(res)
         }).catch(err => {
           reject(err)
