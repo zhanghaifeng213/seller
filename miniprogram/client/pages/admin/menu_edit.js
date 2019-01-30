@@ -92,7 +92,8 @@ Page({
     let {
       name,
       price,
-      desc
+      desc,
+      img
     } = this.data.item;
     const selCate = this.data.category[this.data.selIndex];
     if (!name || !name.trim() || !price || !price.trim()) {
@@ -109,7 +110,8 @@ Page({
       desc,
       price,
       cid: selCate.id,
-      isSell: this.data.isSell
+      isSell: this.data.isSell,
+      img
     };
     let fethUrl = apis.menuAdd;
     if (this.data.pageType === 'edit') {
@@ -162,6 +164,32 @@ Page({
         } else if (res.cancel) {
           console.log('用户点击取消')
         }
+      }
+    })
+  },
+  // 菜品图片上传
+  uploadImage() {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],  //可选择原图或压缩后的图片
+      sourceType: ['album', 'camera'], //可选择性开放访问相册、相机
+      success: (res) => {
+        const tempFilePaths = res.tempFilePaths
+        wx.uploadFile({
+          url: apis.imgUplod,
+          filePath: tempFilePaths[0],
+          name: 'file',
+          success: (res) => {
+            if (res.data && (typeof res.data === 'string')) {
+              res.data = JSON.parse(res.data);
+              if (+res.data.code === 1) {
+                this.setData({
+                  'item.img': res.data.data.path
+                })
+              }
+            }
+          }
+        })
       }
     })
   }

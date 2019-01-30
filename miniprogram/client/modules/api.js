@@ -12,6 +12,8 @@ const apis = {
   menuAdd: `${API_DEV}/menu/add`,
   menuUpdate: `${API_DEV}/menu/update`,
   menuDelete: `${API_DEV}/menu/delete`,
+  imgUplod: `${API_DEV}/upload`,
+  getListByCid: `${API_DEV}/menu/getListByCid`,
   login: `${API_DEV}/user/login`,
   reg: `${API_DEV}/user/reg`,
 }

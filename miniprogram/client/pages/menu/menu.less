@@ -1,3 +1,140 @@
 page {
+  .main-container {}
 
+  @bottomHeight: 120rpx;
+
+  // 分类
+  .category-list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: @bottomHeight;
+    width: 200rpx;
+    overflow-y: scroll;
+    // border-right: 1px solid #eee;
+    box-sizing: border-box;
+    .category-item {
+      padding: 20rpx 20rpx 20rpx 35rpx;
+      color: #666;
+      border-bottom: 1px solid #eee;
+      border-right: 1px solid #eee;
+      box-sizing: border-box;
+      font-size: 30rpx;
+      &.active {
+        border-right: none;
+        background: #fff;
+      }
+    }
+  }
+  .cate-desc {
+    padding-top: 16rpx;
+    padding-bottom: 16rpx;
+    color: green;
+    font-size: 24rpx;
+  }
+
+  // 菜品
+  .menu-list {
+    position: fixed;
+    top: -1rpx;
+    right: 0;
+    bottom: @bottomHeight;
+    width: 550rpx;
+    overflow-y: scroll;
+    background: #fff;
+    .data-tips {
+      color: #ccc;
+      padding: 30rpx;
+      font-size: 24rpx;
+      text-align: center;
+    }
+
+    .show-line {
+      height: 60rpx;
+      display: flex;
+      justify-content: space-between;
+      justify-items: center;
+      .price {
+        height: 60rpx;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        color: #f00;
+      }
+      .dishes-operate {
+        display: flex;
+        justify-content: space-between;
+        justify-items: center;
+        align-items: center;
+        width: 160rpx;
+        height: 60rpx;
+        font-weight: 700;
+      }
+    }
+
+    .btn-operate {
+      width: 50rpx;
+      height: 50rpx;
+      box-sizing: border-box;
+      text-indent: -100rpx;
+      overflow: hidden;
+      &::before,
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      &.sub {
+        position: relative;
+        &::before {
+          width: 22rpx;
+          height: 4rpx;
+          background: red;
+        }
+      }
+      &.add {
+        position: relative;
+        &::before {
+          width: 22rpx;
+          height: 4rpx;
+          background: green;
+        }
+        &::after {
+          width: 4rpx;
+          height: 22rpx;
+          background: green;
+        }
+      }
+    }
+  }
+
+  // 底部下单
+  .bottom-line {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: @bottomHeight;
+    display: flex;
+    background: #999;
+    .left-total {
+      width: 550rpx;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 20rpx;
+    }
+    .confirm-order {
+      width: 200rpx;
+      height: 100%;
+      background: #666;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }
