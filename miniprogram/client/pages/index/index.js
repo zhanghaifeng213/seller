@@ -1,8 +1,10 @@
-// import apis from '../../modules/api'
+import apis from '../../modules/api'
 
 Page({
   data: {
-    showCameraAuthLayer: false, // 授权信息
+    tables: [],
+    tableIndex: 0,
+
     list: [{
       name: '车品',
       url: '',
@@ -30,6 +32,8 @@ Page({
         url: `/pages/menu/menu?id=${num}`
       })
     }
+
+    this.getTableNums();
   },
   onShow() {},
   viewInfo: function (e) {
@@ -40,18 +44,27 @@ Page({
       url
     });
   },
+  bindTableChange(event) {
+    this.setData({
+      tableIndex: event.detail.value
+    });
+  },
+  getTableNums() {
+    wx.fetch({
+      url: apis.getTableList,
+    }).then(res => {
+      if (+res.code === 1) {
+        this.setData({
+          tables: res.data.list
+        })
+      }
+    })
+  },
   // 选择桌号去点单
   selectNumber() {
-    wx.showActionSheet({
-      itemList: ['1号桌'],
-      success(res) {
-        wx.navigateTo({
-          url: `/pages/menu/menu?id=${res.tapIndex}`
-        })
-      },
-      fail(res) {
-        console.log(res.errMsg)
-      }
+    const { _id, num } = this.data.tables[this.data.tableIndex];
+    wx.navigateTo({
+      url: `/pages/menu/menu?id=${_id}&num=${num}`
     })
   },
   // 管理员登录

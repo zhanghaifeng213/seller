@@ -37,6 +37,15 @@
         </view>
       </view>
 
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">菜品描述</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请输入菜品描述"  value="{{item && item.desc}}" data-field="desc" bindinput="inputHandle" />
+        </view>
+      </view>
+
       <!-- <view class="weui-cell weui-cell_input weui-cell_switch">
         <view class="weui-cell__bd">是否上架</view>
         <view class="weui-cell__ft">
@@ -44,7 +53,7 @@
         </view>
       </view> -->
 
-      <view class="weui-cell">
+      <!-- <view class="weui-cell">
         <view class="weui-cell__hd">
           <view class="weui-label">菜品描述</view>
         </view>
@@ -53,7 +62,7 @@
             data-field="desc" bindinput="inputHandle" />
           <view class="weui-textarea-counter">{{item.desc ? item.desc.length : 0}}/200</view>
         </view>
-      </view>
+      </view> -->
 
       <!-- 菜品图片上传 -->
       <view class="weui-cell">

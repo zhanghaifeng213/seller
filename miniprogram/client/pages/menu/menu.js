@@ -11,9 +11,11 @@ Page({
   },
   onLoad(option) {
     const {
-      id
+      id,
+      num
     } = option;
-    console.log(id); // 桌号
+    this.option = option;
+    wx.setNavigationBarTitle({ title: `${num}桌`});
     this.getCatogory().then(list => {
       if (list && list.length > 0) {
         this.selectCategory(list[0]);

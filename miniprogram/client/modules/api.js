@@ -4,6 +4,7 @@ const API_DEV = 'http://116.62.147.91:3030'
 
 const apis = {
   test: `${API_DEV}/`,
+  getTableList: `${API_DEV}/table/list`,
   categoryList: `${API_DEV}/category/list`,
   categoryAdd: `${API_DEV}/category/add`,
   categoryDel: `${API_DEV}/category/delete`,

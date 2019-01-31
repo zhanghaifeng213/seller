@@ -9,19 +9,21 @@ page {
     top: 0;
     left: 0;
     bottom: @bottomHeight;
-    width: 200rpx;
+    width: 230rpx;
     overflow-y: scroll;
     // border-right: 1px solid #eee;
     box-sizing: border-box;
     .category-item {
-      padding: 20rpx 20rpx 20rpx 35rpx;
+      width: 100%;
+      padding: 22rpx 10rpx;
+      text-align: center;
       color: #666;
       border-bottom: 1px solid #eee;
       border-right: 1px solid #eee;
       box-sizing: border-box;
       font-size: 30rpx;
       &.active {
-        border-right: none;
+        border-right-color: #fff;
         background: #fff;
       }
     }
@@ -39,7 +41,7 @@ page {
     top: -1rpx;
     right: 0;
     bottom: @bottomHeight;
-    width: 550rpx;
+    width: 520rpx;
     overflow-y: scroll;
     background: #fff;
     .data-tips {
