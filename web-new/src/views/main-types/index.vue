@@ -20,7 +20,12 @@
           <span v-else>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="desc" label="描述"></el-table-column>
+      <el-table-column prop="desc" label="描述">
+        <template slot-scope="scope">
+          <el-input :value="scope.row.desc" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]"></el-input>
+          <span v-else>{{scope.row.desc}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleFinish(scope.$index, scope.row)" v-if="scope.row.showEdit">完成</el-button>
@@ -29,7 +34,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <p>{{this.menuList}}</p>
   </div>
 </template>
 <script>
@@ -46,12 +50,41 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["handleAddTypesList", "handleDeleteType"]),
+    ...mapActions([
+      "handleAddTypesList",
+      "handleDeleteType",
+      "handleUpdataType"
+    ]),
     handleEdit(index, row) {
       row.showEdit = true;
     },
     handleFinish(index, row) {
-      row.showEdit = false;
+      if (row.name === "") {
+        this.$message.error("请输入分类名称");
+        return;
+      } else {
+        const typedata = {};
+        typedata.id = row.id;
+        typedata.name = row.name;
+        if (row.desc !== "暂无描述") {
+          typedata.desc = row.desc;
+        }
+        this.handleUpdataType(typedata).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.$message({
+              type: "success",
+              message: "修改成功!"
+            });
+            this.getTypesInfo();
+          } else if (res.data.code === 0) {
+            this.$message.error(res.data.errMsg);
+          } else if (res.data.code === -1) {
+            this.$message.error(res.data.errMsg);
+          }
+        });
+        row.showEdit = false;
+      }
     },
     handleDelete(index, row) {
       this.$confirm(`是否删除 "${row.name}" 这一分类`, "提示", {
@@ -59,6 +92,28 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       })
+        .then(() => {
+          this.handleDeleteType(row.id).then(res => {
+            if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.getTypesInfo();
+            } else {
+              this.$message({
+                message: "警告哦，这是一条警告消息",
+                type: "warning"
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        })
         .then(() => {
           this.handleDeleteType(row.id).then(res => {
             if (res.data.code === 1) {
@@ -95,14 +150,7 @@ export default {
             });
 
             // 添加成功后重新请求一次内容
-            this.$store
-              .dispatch("handleGetTypeInfo")
-              .then(res => {
-                this.menuList = res.list;
-              })
-              .catch(err => {
-                console.log(err.response);
-              });
+            this.getTypesInfo();
           } else if (res.data.code === 0) {
             this.$message.error(res.data.errMsg);
           } else if (res.data.code === -1) {
@@ -115,20 +163,23 @@ export default {
     },
     onSubmit() {
       this.addTypesList();
+    },
+    getTypesInfo() {
+      this.$store
+        .dispatch("handleGetTypeInfo")
+        .then(res => {
+          res.list.forEach(item => {
+            item.showEdit = false;
+          });
+          this.menuList = res.list;
+        })
+        .catch(err => {
+          console.log(err.response);
+        });
     }
   },
   mounted() {
-    this.$store
-      .dispatch("handleGetTypeInfo")
-      .then(res => {
-        res.list.forEach(item => {
-          item.showEdit = false;
-        });
-        this.menuList = res.list;
-      })
-      .catch(err => {
-        console.log(err.response);
-      });
+    this.getTypesInfo();
   }
 };
 </script>
