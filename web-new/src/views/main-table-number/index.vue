@@ -1,25 +1,9 @@
 <template>
   <div>
     main-table-number
-    <el-form :inline="true" :model="dishesForm" class="demo-form-inline" size="small">
-      <el-form-item label="菜品名称">
-        <el-input v-model="dishesForm.name" placeholder="菜品名称"></el-input>
-      </el-form-item>
-      <el-form-item label="所属分类">
-        <el-select v-model="dishesForm.cid" placeholder="所属分类">
-          <el-option
-            v-for="item in typeList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="菜品价格">
-        <el-input v-model="dishesForm.price" placeholder="菜品价格"></el-input>
-      </el-form-item>
-      <el-form-item label="菜品描述">
-        <el-input v-model="dishesForm.desc" placeholder="菜品描述"></el-input>
+    <el-form :inline="true" :model="tableForm" class="demo-form-inline" size="small">
+      <el-form-item label="桌号">
+        <el-input v-model="tableForm.num" placeholder="桌号"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="add">添加</el-button>
@@ -27,9 +11,9 @@
     </el-form>
 
     <el-table
-      :data="tableData5"
+      :data="tableList"
       style="width: 100%">
-      <el-table-column type="expand">
+      <!-- <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="商品名称">
@@ -55,80 +39,93 @@
             </el-form-item>
           </el-form>
         </template>
+      </el-table-column> -->
+      <el-table-column
+        label="桌号 ID"
+        prop="_id">
       </el-table-column>
       <el-table-column
-        label="商品 ID"
-        prop="id">
+        label="桌号"
+        prop="num">
       </el-table-column>
-      <el-table-column
-        label="商品名称"
-        prop="name">
-      </el-table-column>
-      <el-table-column
-        label="描述"
-        prop="desc">
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
-
+import { tableNumber,tableAdd } from '@/fetch/number'
 export default {
   name: 'main-table-number',
   data() {
     return {
-      dishesDatas: [],
+      tableList: [],
       typeList: [],
-      dishesForm: {
-      name: '',
-      price: '',
-      cid: '',
-      desc: ''
-    },
-    tableData5: [{
-        id: '12987122',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987123',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987125',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987126',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }]
+      tableForm: {
+        num: '',
+      },
     }
   },
-  mounted() {
+  mounted:function () {
     this.getTableNumber()
   },
-  methods:{
-    getTableNumber() {
-      
+  methods: {
+    getTableNumber () {
+      tableNumber().then(
+        res => {
+          console.log(res)
+          let {code,data} =res.data;
+          if( code === 1) {
+            this.tableList=data.list;
+          }
+        }
+      ).catch(
+        err => {
+          console.log(err)
+        }
+      )
     },
     add() {
-
+      tableAdd(this.tableForm).then(
+        res => {
+          console.log(res)
+          const {code, msg, errMsg} = res.data
+          switch (code) {
+            case 0:
+              this.$message({
+                message: errMsg,
+                type: 'warning'
+              })
+              break
+            case 1:
+              this.$message({
+                message: msg,
+                type: 'success'
+              })
+             this.getTableNumber();
+             this.tableForm.num='';
+              break
+          }
+        }
+      ).catch(
+        
+        err => {
+          console.log(err)
+          this.$message({
+            message: '添加失败',
+            type: 'error'
+          })
+        }
+      )
     }
   }
 }
