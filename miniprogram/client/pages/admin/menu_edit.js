@@ -179,12 +179,16 @@ Page({
           url: apis.imgUplod,
           filePath: tempFilePaths[0],
           name: 'file',
+          formData: {
+            group: 'menu',
+            name: (this.data.item && this.data.item.name) || '菜品'
+          },
           success: (res) => {
             if (res.data && (typeof res.data === 'string')) {
               res.data = JSON.parse(res.data);
               if (+res.data.code === 1) {
                 this.setData({
-                  'item.img': res.data.data.path
+                  'item.img': res.data.data.url
                 })
               }
             }
