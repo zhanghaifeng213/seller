@@ -1,30 +1,13 @@
 <template>
   <div>
     <p class="h3">main-dishes</p>{{dishesForm.cid}}
-    <el-form :inline="true" :model="dishesForm" class="demo-form-inline" size="small">
-      <el-form-item label="菜品名称">
-        <el-input v-model="dishesForm.name" placeholder="菜品名称"></el-input>
-      </el-form-item>
-      <el-form-item label="所属分类">
-        <el-select v-model="dishesForm.cid" placeholder="所属分类">
-          <el-option
-            v-for="item in typeList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="菜品价格">
-        <el-input v-model="dishesForm.price" placeholder="菜品价格"></el-input>
-      </el-form-item>
-      <el-form-item label="菜品描述">
-        <el-input v-model="dishesForm.desc" placeholder="菜品描述"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="add">添加</el-button>
-      </el-form-item>
-    </el-form>
+    <el-button @click="dialogVisible = true">添加菜品</el-button>
+    <DishesEdit
+      :dialogVisible="dialogVisible"
+      :typeList="typeList"
+      :dishesForm="dishesForm"
+      :status="status"
+      @edit="dealDatas"></DishesEdit>
     <el-table
       :data="dishesDatas"
       style="width: 100%">
@@ -35,7 +18,7 @@
               <span>{{ props.row.name }}</span>
             </el-form-item>
             <el-form-item label="菜品 ID">
-              <span>{{ props.row.id }}</span>
+              <span>{{ props.row._id }}</span>
             </el-form-item>
             <el-form-item label="菜品价格">
               <span>{{ props.row.price }}</span>
@@ -53,7 +36,15 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="id"
+        prop="img"
+        label="菜品图片"
+        width="300">
+        <template slot-scope="scope">
+          <img :src="scope.row.img" :alt="scope.row.name" width="180" height="60">
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="_id"
         label="菜品 ID"
         >
       </el-table-column>
@@ -65,29 +56,38 @@
       <el-table-column
         prop="price"
         label="菜品价格"
+        width="150"
         >
       </el-table-column>
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button plain size="mini">Edit</el-button>
-          <el-button type="danger" size="mini" @click="del(scope.row.id, scope.row.name)">Delete</el-button>
+          <el-button plain size="mini" @click="edit(scope.row)">Edit</el-button>
+          <el-button type="danger" size="mini" @click="del(scope.row._id, scope.row.name)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
-import { dishes, types, disheAdd, disheDel } from '@/fetch/dishes'
+import { dishes, types, disheAdd, disheDel, disheEdit } from '@/fetch/dishes'
+import DishesEdit from './dishes-edit'
 
 export default {
   name: 'main-dishes',
+  components: {
+    DishesEdit
+  },
   data () {
     return {
+      dialogVisible: false,
+      curID: '',
+      status: 0, // 0:添加 1:编辑
       dishesDatas: [],
       typeList: [],
       dishesForm: {
         name: '',
+        img: '',
         price: '',
         cid: '',
         desc: ''
@@ -98,6 +98,7 @@ export default {
     this.getTypes()
   },
   computed: {
+    // 获取分类名称
     cidStr () {
       return cid => {
         for (let item of this.typeList) {
@@ -116,7 +117,9 @@ export default {
           const {code, data} = res.data
           if (code  === 1) {
             this.typeList = data.list
-            this.getDishes()
+            this.$nextTick(() => {
+              this.getDishes()
+            })
           }
         }
       ).catch(
@@ -139,11 +142,25 @@ export default {
         }
       )
     },
+    dealDatas (e) {
+      // 判断是确定还是取消
+      if (e) {
+        if (this.status) {
+          this.editDo()
+        } else {
+          this.add()
+        }
+        console.log('确定')
+      } else {
+        this.dialogVisible = false
+        this.clear()
+      }
+    },
+    // 添加菜品
     add () {
       disheAdd(this.dishesForm).then(
         res => {
           const {code, msg, errMsg} = res.data
-          console.log(res.data)
           switch (code) {
             case 0:
               this.$message({
@@ -157,6 +174,7 @@ export default {
                 type: 'success'
               })
               this.clear()
+              this.dialogVisible = false
               break
           }
         }
@@ -169,6 +187,34 @@ export default {
         }
       )
     },
+    // 编辑按钮
+    edit (item) {
+      for (let val in this.dishesForm) {
+        this.dishesForm[val] = item[val]
+      }
+      this.curID = item._id
+      this.status = 1
+      this.dialogVisible = true
+    },
+    // 编辑菜品
+    editDo () {
+      let data = this.dishesForm
+      data.id = this.curID
+      disheEdit(data).then(
+        res => {
+          const {code, msg} = res.data
+          if (code === 1) {
+            this.$message({
+              message: msg,
+              type: 'success'
+            })
+            this.clear()
+            this.dialogVisible = false
+          }
+        }
+      )
+    },
+    // 删除菜品
     del (id, name) {
       const data = {id: id}
       this.$confirm(`您正在删除菜品，是否确认删除《${name}》？`, '提示', {
@@ -176,7 +222,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log('确定')
         disheDel(data).then(
           res => {
             console.log(res)
@@ -189,6 +234,7 @@ export default {
         console.log(err)
       })
     },
+    // 清空表单
     clear () {
       for (let val in this.dishesForm) {
         this.dishesForm[val] = ''

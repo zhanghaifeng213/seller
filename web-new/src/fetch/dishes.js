@@ -1,9 +1,10 @@
 import http from '@/libs/httpRequest'
 
-const dishes = () => {
+const dishes = (params) => {
   return http({
     url: http.adornUrl('/menu/allList'),
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 
@@ -17,7 +18,15 @@ const disheAdd = (data) => {
 
 const disheDel = (data) => {
   return http({
-    url: http.adornUrl('/menu/add'),
+    url: http.adornUrl('/menu/list'),
+    method: 'post',
+    data: data
+  })
+}
+
+const disheEdit = (data) => {
+  return http({
+    url: http.adornUrl('/menu/update'),
     method: 'post',
     data: data
   })
@@ -30,4 +39,4 @@ const types = () => {
   })
 }
 
-export {dishes, disheAdd, types, disheDel}
+export {dishes, disheAdd, types, disheDel, disheEdit}
