@@ -1,0 +1,56 @@
+<!--about.wxml-->
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">分类管理</view>
+    <view class="page__desc">Classification management</view>
+  </view>
+
+  <view class="page__bd">
+    <view class="weui-cells__title">类别名称</view>
+    <view class="weui-cells weui-cells_after-title">
+      <!-- 添加新分类 -->
+      <view class="weui-cell weui-cell_input icon-operate-cell" hidden="{{!isAdding}}">
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请输入新类别名称" data-type="add" bindinput="inputCategory" value="{{newCategory}}" />
+        </view>
+        <view class="icon-operate cancel" bindtap="cancelAdd">
+          <image src="../../images/cancel.png" mode="aspectFit" />
+        </view>
+        <view class="icon-operate confirm" bindtap="confirmAdd">
+          <image src="../../images/checked.png" mode="aspectFit" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_link" hidden="{{isAdding}}" bindtap="switchAddState">
+        <view class="weui-cell__bd">+ 添加更多</view>
+      </view>
+      <!-- End 添加新分类 -->
+
+      <!-- 类别列表 -->
+      <view class="weui-cell icon-operate-cell" wx:for="{{category}}" wx:key="{{index}}">
+        <view class="weui-cell__bd">{{item.name}}</view>
+        <view class="weui-cell__ft"></view>
+
+        <view class="icon-operate edit" data-item="{{item}}" data-op="edit" bindtap="operate">
+          <image src="../../images/edit.png" mode="aspectFit" />
+        </view>
+        <view class="icon-operate delete" data-item="{{item}}" data-op="del" bindtap="operate">
+          <image src="../../images/garbage_gray.png" mode="aspectFit" />
+        </view>
+      </view>
+      <!-- End 类别列表 -->
+    </view>
+  </view>
+</view>
+
+
+<!-- 编辑弹窗 -->
+<view class="layer-bg {{isEditting? 'show' : ''}}"></view>
+<view class="layer-edit {{isEditting? 'show' : ''}}">
+  <view class="title-text">输入修改后的分类名称</view>
+  <view class="desc-text" wx:if="{{editItem}}">原分类名: {{editItem.name}}</view>
+  <input class="input-line" type="text" placeholder="输入分类名称" data-type="edit" bindinput="inputCategory" value="{{editCategory}}" />
+  <view class="btns">
+    <button class="weui-btn" type="default" bindtap="cancelEdit">取消</button>
+    <button class="weui-btn" type="primary" bindtap="confirmEdit">修改</button>
+  </view>
+</view>

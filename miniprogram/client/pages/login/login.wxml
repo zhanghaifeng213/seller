@@ -1,0 +1,67 @@
+<!--about.wxml-->
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">{{type === 'reg' ? '注册' : '登录'}}</view>
+    <view class="page__desc">{{type === 'reg' ? 'Register' : 'Login'}}</view>
+  </view>
+
+  <view class="page__bd {{ type === 'reg' ? '' : 'page-login' }}">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">账号</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请输入账号" data-type="name" bindinput="bindInput" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">密码</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input type="password" class="weui-input" placeholder="请输入密码" data-type="pwd" bindinput="bindInput" />
+        </view>
+      </view>
+
+      <block wx:if="{{type === 'reg'}}">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">确认密码</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input type="password" class="weui-input" placeholder="请再次输入密码" />
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input weui-cell_vcode">
+          <view class="weui-cell__hd">
+            <view class="weui-label">验证码</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="请输入验证码" />
+          </view>
+          <view class="weui-cell__ft">
+            <image class="weui-vcode-img" src="../../images/vcode.jpg" style="width: 108px"></image>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <checkbox-group bindchange="bindAgreeChange">
+    <label class="weui-agree" for="weuiAgree">
+      <view class="weui-agree__text">
+        <checkbox class="weui-agree__checkbox" id="weuiAgree" value="agree" checked="{{isAgree}}" />
+        <view class="weui-agree__checkbox-icon">
+          <icon class="weui-agree__checkbox-icon-check" type="success_no_circle" size="9" wx:if="{{isAgree}}"></icon>
+        </view>
+        阅读并同意<navigator url="" class="weui-agree__link">《相关条款》</navigator>
+      </view>
+    </label>
+  </checkbox-group>
+
+  <view class="weui-btn-area">
+    <button class="weui-btn" type="primary" bindtap="login">确定</button>
+  </view>
+
+</view>
