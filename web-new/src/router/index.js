@@ -9,6 +9,7 @@ import info from '@/views/main-info'
 import income from '@/views/mian-income'
 import records from '@/views/main-order-record'
 import order from '@/views/main-order'
+import meterial from '@/views/main-meterial'
 Vue.use(Router)
 
 export default new Router({
@@ -66,6 +67,11 @@ export default new Router({
           path: '/order',
           name: 'order',
           component: order,
+          meta: { requireAuth: true }
+        }, {
+          path: '/meterial',
+          name: 'meterial',
+          component: meterial,
           meta: { requireAuth: true }
         }
       ]

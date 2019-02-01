@@ -8,7 +8,8 @@
             <li class="link"><router-link :to="{name: 'income'}" >收入管理</router-link></li>
             <li class="link"><router-link :to="{name: 'records'}">历史订单</router-link></li>
             <li class="link"><router-link :to="{name: 'info'}">用户管理</router-link></li>
-        </ul>   
+            <li class="link"><router-link :to="{name: 'meterial'}">素材管理</router-link></li>
+        </ul>
     </aside>
 </template>
 <script>
@@ -31,6 +32,6 @@ export default {
             }
         }
     }
-    
+
 </style>
 
