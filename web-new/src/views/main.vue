@@ -4,12 +4,12 @@
     <main-sidebar />
     <div class="wrap-content">
       <main-content />
-       
+
     </div>
-   
+
     <div @click="logout">logout</div>
 
-   
+
   </div>
 </template>
 <script>
@@ -45,6 +45,9 @@ export default {
     width: calc(100vw - 230px);
     height: calc(100vh - 50px);
     padding: 65px 15px 15px 15px;
+    .wrap-main {
+      overflow: scroll;
+    }
   }
 }
 </style>

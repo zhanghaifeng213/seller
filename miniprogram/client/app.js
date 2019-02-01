@@ -14,7 +14,13 @@ const myFetch = new Fetch({
       return true;
     } else if (httpStatusCode === 401) {
       const pages = getCurrentPages();
-      const path = encodeURIComponent(`/${pages[pages.length - 1].route}`);
+      const currentPage = pages[pages.length - 1];
+      // console.log(currentPage.options);
+      let params = '';
+      Object.keys(currentPage.options).forEach(item => {
+        params += `${item}=${currentPage.options[item]}`
+      })
+      const path = encodeURIComponent(`/${currentPage.route}?${params}`);
       return wx.navigateTo({
         url: `/pages/login/login?pageback=${path}`
       })
