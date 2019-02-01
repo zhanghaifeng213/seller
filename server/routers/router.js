@@ -1,17 +1,22 @@
-const Router = require("koa-router")
-// 拿到操作user 表的逻辑对象
-const user = require('../control/user')
-const category = require('../control/category')
-const router = new Router
-// 设计主页
-// 用户登陆
-router.post("/user/login", user.login)
-// 用户退出
-router.get("/user/logout", user.logout)
-// 菜单分类
-router.get("/category/inquire", user.keepLog, category.inquire)
-router.post("/category/add", user.keepLog, category.add)
-router.post("/category/delete", user.keepLog, category.delete)
-router.post("/category/update", user.keepLog, category.update)
-module.exports = router
+/*
+ * @Content: 所有模块路由
+ * => 基础API
+ * => 用户模块
+ * => 菜单模块
+ *
+ * @Author: Edwin
+ * @Last Modified by: Edwin
+ * @Last Modified time: 2019-01-24 23:53:34
+ * @Last Modified time: 2019-01-25 20:35:39
+ */
+const Router = require('koa-router')();
+const home = require('./home'); // 基础API
+const user = require('./user'); // 用户模块
+const category = require('./category'); // 菜单模块
 
+
+Router.use('/', home.routes(), home.allowedMethods())
+Router.use('/user', user.routes(), user.allowedMethods())
+Router.use('/category', category.routes(), category.allowedMethods())
+
+module.exports = Router;

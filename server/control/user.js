@@ -1,126 +1,273 @@
-// const Article = require("../Models/article")
-const User = require("../Models/user")
-// const Comment = require("../Models/comment")
+const jsonwebtoken = require('jsonwebtoken');
+const UserModel = require("../Models/user")
 const encrypt = require('../util/encrypt')
 
-exports.login = async ctx => {
-  const user = ctx.request.body
-  const username = user.username
-  const password = user.password
-  await new Promise((resolve, reject) => {
-    User.find({ username: username }, (err, data) => {
-      // console.log("查询数据库username：" + data)
-      if (err) return reject(err)
-      if (data.length === 0) return reject('用户名不存在')
-      // 把用户传过来密码加密跟数据库比对
-      if (data[0].password === encrypt(password)) {
-        return resolve(data)
-      }
-      resolve("")
-    })
-  })
-    .then(async data => {
-      if (!data) {
-        return ctx.body = {
-          state: 0,
-          message: "密码不正确，登陆失败"
-        }
-      }
-      // 让用户在他的 cookie 里设置 username password 加密后的权限
-      ctx.cookies.set("username", username, {
-        domain: "localhost",
-        path: "/",
-        maxAge: 36e5,
-        httpOnly: true, // 不让客户端访问这个cookie
-        overwrite: false,
-        signed: true
-      })
-      // 用户在数据库的_id 值
-      ctx.cookies.set("uid", data[0]._id, {
-        domain: "localhost",
-        path: "/",
-        maxAge: 36e5,
-        httpOnly: true, // 不让客户端访问这个cookie
-        overwrite: false,
-        signed: true
-      })
-      ctx.session = {
-        username,
-        uid: data[0]._id,
-        avatar: data[0].avatar,
-        role: data[0].role
-      }
-      ctx.body = {
-        state: 1,
-        message: "登陆成功"
-      }
-    })
-    .catch(async err => {
-      ctx.body = {
-        state: 0,
-        message: "登陆失败"
-      }
-    })
-}
+const {
+  jwtSecret
+} = require('../Config/config');
 
-
-// 确定用户状态， 保持用户的状态
-exports.keepLog = async (ctx, next) => {
-  console.log('session')
-  if (ctx.session.isNew) { // session没有
-    if (ctx.cookies.get('username')) {
-      let uid = ctx.cookies.get('uid')
-      const avatar = await User.findById(uid)
-        .then(data => {
-          data.avatar
-        })
-      ctx.session = {
-        username: ctx.cookies.get('username'),
-        uid: ctx.cookies.get('uid')
+class User {
+  // 用户注册(添加)
+  async reg(ctx, next) {
+    const {
+      username,
+      password,
+      role = 1
+    } = ctx.request.body;
+    if (!username || !password) {
+      ctx.body = {
+        code: 0,
+        data: '',
+        errMsg: '用户名或者密码不能为空'
       }
     }
 
-  }
-  await next()
-}
-
-exports.logout = async ctx => {
-  ctx.session = null
-  ctx.cookies.set("username", null, {
-    maxAge: 0
-  })
-  ctx.cookies.set("uid", null, {
-    maxAge: 0
-  })
-  // 在后台重定向到跟页面
-  ctx.body = {
-    state: 1,
-    message: "退出成功"
-  }
-}
-
-exports.upload = async ctx => {
-  const filename = ctx.req.file.filename
-  let data = {}
-  await User.update({
-    _id: ctx.session.uid
-  }, {
-      $set: {
-        avatar: "/avatar/" + filename
+    if (role === 0 && username !== 'admin' && password !== 'admin') {
+      return ctx.body = {
+        code: 0,
+        data: '',
+        errMsg: '管理员角色已关闭注册，请联系管理员添加!'
       }
-    }, (err, res) => {
-      if (err) {
-        data = {
-          status: 0,
-          message: err
+    }
+
+    await new Promise((resolve, reject) => {
+      UserModel.find({
+        username
+      }).then(data => {
+        if (data.length === 0) {
+          new UserModel({
+            username: username,
+            password: encrypt(password),
+            role,
+          }).save().then(data => {
+            return resolve({
+              code: 1,
+              data: '注册成功',
+            });
+          }).catch(err => {
+            // console.log('管理员账号检查失败')
+            return resolve({
+              code: 0,
+              data: '',
+              errMsg: '数据查询错误'
+            });
+          })
+        } else {
+          return resolve({
+            code: 0,
+            data: '',
+            errMsg: '用户名已存在'
+          });
         }
-      } else {
-        data = {
-          status: 1,
-          message: "上传成功"
-        }
-      }
+      })
+    }).then(res => {
+      return ctx.body = res;
     })
-  ctx.body = data
+  }
+
+  // 用户登录
+  async login(ctx, next) {
+    const {
+      username,
+      password
+    } = ctx.request.body;
+    if (!username || !password) {
+      ctx.body = {
+        code: 0,
+        data: '',
+        errMsg: '用户名或者密码不能为空'
+      }
+      return;
+    }
+
+    await new Promise((resolve, reject) => {
+      UserModel.find({
+        username: username
+      }, (err, data) => {
+        if (err) return reject(err)
+        if (data.length === 0) return reject('用户名不存在')
+        if (data[0].password === encrypt(password)) {
+          return resolve(data)
+        }
+        resolve("")
+      })
+    })
+      .then(async data => {
+        if (!data) {
+          return ctx.body = {
+            code: 0,
+            data: '',
+            errMsg: "密码不正确，登陆失败"
+          }
+        }
+        const {
+          role,
+          avatar,
+          username,
+          id
+        } = data[0];
+        ctx.body = {
+          code: 1,
+          data: {
+            role,
+            avatar,
+            username,
+            id,
+            token: getToken({
+              id,
+              username
+            })
+          }
+        }
+      })
+      .catch(async err => {
+        return ctx.body = {
+          code: 0,
+          errMsg: "登陆失败"
+        }
+      })
+  }
+
+  // 退出登录(客户端清除token等相关本地信息即可)
+  async logout(ctx, next) {
+    ctx.body = {
+      code: 1,
+      data: "退出成功"
+    }
+    next();
+  }
+
+  // 图像修改
+  async upload(ctx, next) {
+    if (!ctx.header || !ctx.header.authorization) {
+      ctx.status = 401;
+      next();
+      return;
+    }
+    // 前端访问时会附带token在请求头
+    const payload = await getJWTPayload(ctx.headers.authorization);
+    if (payload) {
+      const {
+        id
+      } = payload;
+      const filename = ctx.req.file.filename
+      let data = {}
+      await User.update({
+        _id: id
+      }, {
+          $set: {
+            avatar: "/avatar/" + filename
+          }
+        }, (err, res) => {
+          if (err) {
+            data = {
+              status: 0,
+              message: err
+            }
+          } else {
+            data = {
+              status: 1,
+              message: "上传成功"
+            }
+          }
+        })
+      ctx.body = data
+    } else {
+      return ctx.body = {
+        code: 0,
+        message: '查询失败',
+        data: '请先登录'
+      }
+    }
+  }
+
+  // 用户信息修改
+  async getinfo(ctx, next) {
+    if (!ctx.header || !ctx.header.authorization) {
+      ctx.body = {
+        code: 0,
+        errMsg: '请先登录',
+        data: ''
+      }
+      return;
+    }
+    // 前端访问时会附带token在请求头
+    const payload = await getJWTPayload(ctx.headers.authorization);
+    if (payload) {
+      const {
+        id
+      } = payload;
+      await new Promise((resolve, reject) => {
+        UserModel.find({
+          _id: id
+        }, (err, data) => {
+          if (err) {
+            return {
+              code: 0,
+              errMsg: '服务器错误'
+            }
+          };
+          if (!data) {
+            return {
+              code: 0,
+              errMsg: '当前用户不存在'
+            }
+          };
+          resolve(data[0]);
+        })
+      })
+        .then(data => {
+          const {
+            role,
+            avatar,
+            username,
+            id
+          } = data;
+          return ctx.body = {
+            code: 1,
+            data: {
+              role,
+              avatar,
+              username,
+              id
+            }
+          };
+        })
+        .catch(err => {
+          ctx.status = 401;
+          ctx.body = {
+            code: 0,
+            errMsg: '查询失败'
+          }
+        })
+    } else {
+      return ctx.body = {
+        code: 0,
+        errMsg: '查询失败, 请先登录',
+      }
+    }
+  }
 }
 
+module.exports = new User();
+
+/* 获取一个期限为4小时的token */
+function getToken(payload = {}) {
+  return jsonwebtoken.sign(payload, jwtSecret, {
+    expiresIn: '4h'
+  });
+}
+
+/* 通过token获取JWT的payload部分 */
+async function getJWTPayload(token) {
+  const authArr = token.split(' ');
+  if (authArr.length !== 2 || !/^Bearer$/i.test(authArr[0])) {
+    return;
+  }
+  // 验证并解析JWT
+  try {
+    return await jsonwebtoken.verify(authArr[1], jwtSecret);
+  } catch (error) {
+    return;
+  }
+}
