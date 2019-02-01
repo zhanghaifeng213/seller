@@ -4,6 +4,7 @@ import axios from 'axios'
 import { login, info } from '@/fetch/user'
 import { getTypeInfo } from '@/fetch/types'
 import { addTypesList, deleteType, updataType } from '../fetch/types'
+import { inquire, userReg, userUpdate } from '../fetch/user'
 
 Vue.use(Vuex)
 
@@ -112,8 +113,38 @@ export default new Vuex.Store({
     },
     handleUpdataType ({commit}, data) {
       return new Promise((resolve, reject) => {
-        console.log(data)
         updataType(data).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleGetUserLists ({commit}) {
+      const data = {
+        pageNum: 1,
+        pageSize: 10
+      }
+      return new Promise((resolve, reject) => {
+        inquire(data).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleUserReg ({commit}, data) {
+      return new Promise((resolve, reject) => {
+        userReg(data).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleUpdateUser ({commit}, data) {
+      return new Promise((resolve, reject) => {
+        userUpdate(data).then(res => {
           resolve(res)
         }).catch(err => {
           reject(err)
