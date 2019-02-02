@@ -76,7 +76,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- <el-pagination
+    <el-pagination
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -84,7 +84,7 @@
       :page-size="pages.size"
       layout="prev, pager, next"
       :total="pages.total">
-    </el-pagination> -->
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -98,27 +98,31 @@ export default {
   },
   data () {
     return {
-      pages: {
-        currentPage1: 2,
-        total: 7,
-        size: 1
-      },
+      curID: '',
+      curCID: '',
       dishesCID: '全部',
       dialogVisible: false,
-      curID: '',
       status: 0, // 0:添加 1:编辑
-      dishesDatas: [],
-      typeList: [],
+      dishesDatas: [], // 菜单列表
+      typeList: [], // 分类列表
+      // 表单
       dishesForm: {
         name: '',
         img: '',
         price: '',
         cid: '',
         desc: ''
+      },
+      // 分页信息
+      pages: {
+        currentPage1: 2,
+        total: 7,
+        size: 1
       }
     }
   },
   watch: {
+    // 分类查询
     dishesCID (curr, old) {
       if (curr === '全部') {
         this.getDishes()
@@ -163,13 +167,13 @@ export default {
     },
     // 获取全部菜品
     getDishes (number = 1) {
-      dishes().then(
+      dishes({pageNum: number}).then(
         res => {
           const {code, data} = res.data
           if (code === 1) {
             this.dishesDatas = data.list
-            // this.dishesCID = '全部'
-            // this.pagesChange(number, data.totalPage)
+            this.dishesCID = '全部'
+            this.pagesChange(number, data.totalPage)
           }
         }
       ).catch(
@@ -179,13 +183,14 @@ export default {
       )
     },
     // CID获取菜品
-    getDishesCID (cid) {
-      dishesByCID({cid: cid}).then(
+    getDishesCID (cid, number = 1) {
+      this.curCID = cid
+      dishesByCID({cid: cid, pageNum: number}).then(
         res => {
           const {code, data} = res.data
           if (code === 1) {
             this.dishesDatas = data.list
-            // this.pagesChange(number, data.totalPage)
+            this.pagesChange(number, data.totalPage)
           }
         }
       )
@@ -275,7 +280,6 @@ export default {
       }).then(() => {
         disheDel(data).then(
           res => {
-            console.log(res)
             if (res.data.code === 1) {
               this.$message({type: 'success', message: '菜品删除成功!'})
               this.getDishes()
@@ -293,23 +297,29 @@ export default {
       }
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      this.getDishes(val)
-      console.log(`当前页: ${val}`);
+      if (this.dishesCID === '全部') {
+        this.getDishes(val)
+      } else {
+        this.getDishesCID(this.curCID, val)
+      }
+      console.log(`当前页: ${val}`)
     },
     pagesChange (val, total) {
       this.pages.currentPage1 = val // 当前第几页
       this.pages.total = total  // 菜品总条目数
       this.pages.size = 10 // 每页显示条目个数
-      console.log(val, total, this.pages.size)
     }
   }
 }
 </script>
 
 <style>
+.wrap-content {
+  overflow: auto;
+}
 .demo-table-expand {
   font-size: 0;
 }
