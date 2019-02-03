@@ -1,7 +1,16 @@
 <template>
   <div>
-    <p class="h3">main-dishes</p>{{dishesForm.cid}}
+    <p class="h3">main-dishes</p>
     <el-button @click="dialogVisible = true">添加菜品</el-button>
+    <el-select v-model="dishesCID" placeholder="所属分类">
+      <el-option label="全部" value="全部"></el-option>
+      <el-option
+        v-for="item in typeList"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id">
+      </el-option>
+    </el-select>
     <DishesEdit
       :dialogVisible="dialogVisible"
       :typeList="typeList"
@@ -67,10 +76,19 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page.sync="pages.currentPage1"
+      :page-size="pages.size"
+      layout="prev, pager, next"
+      :total="pages.total">
+    </el-pagination>
   </div>
 </template>
 <script>
-import { dishes, types, disheAdd, disheDel, disheEdit } from '@/fetch/dishes'
+import { dishes, types, disheAdd, disheDel, disheEdit, dishesByCID } from '@/fetch/dishes'
 import DishesEdit from './dishes-edit'
 
 export default {
@@ -80,17 +98,36 @@ export default {
   },
   data () {
     return {
-      dialogVisible: false,
       curID: '',
+      curCID: '',
+      dishesCID: '全部',
+      dialogVisible: false,
       status: 0, // 0:添加 1:编辑
-      dishesDatas: [],
-      typeList: [],
+      dishesDatas: [], // 菜单列表
+      typeList: [], // 分类列表
+      // 表单
       dishesForm: {
         name: '',
         img: '',
         price: '',
         cid: '',
         desc: ''
+      },
+      // 分页信息
+      pages: {
+        currentPage1: 2,
+        total: 7,
+        size: 1
+      }
+    }
+  },
+  watch: {
+    // 分类查询
+    dishesCID (curr, old) {
+      if (curr === '全部') {
+        this.getDishes()
+      } else {
+        this.getDishesCID(curr)
       }
     }
   },
@@ -110,10 +147,10 @@ export default {
     }
   },
   methods: {
+    // 获取类别
     getTypes () {
       types().then(
         res => {
-          console.log(res)
           const {code, data} = res.data
           if (code  === 1) {
             this.typeList = data.list
@@ -128,12 +165,15 @@ export default {
         }
       )
     },
-    getDishes () {
-      dishes().then(
+    // 获取全部菜品
+    getDishes (number = 1) {
+      dishes({pageNum: number}).then(
         res => {
           const {code, data} = res.data
           if (code === 1) {
             this.dishesDatas = data.list
+            this.dishesCID = '全部'
+            this.pagesChange(number, data.totalPage)
           }
         }
       ).catch(
@@ -142,6 +182,20 @@ export default {
         }
       )
     },
+    // CID获取菜品
+    getDishesCID (cid, number = 1) {
+      this.curCID = cid
+      dishesByCID({cid: cid, pageNum: number}).then(
+        res => {
+          const {code, data} = res.data
+          if (code === 1) {
+            this.dishesDatas = data.list
+            this.pagesChange(number, data.totalPage)
+          }
+        }
+      )
+    },
+    // 添加和修改的判断
     dealDatas (e) {
       // 判断是确定还是取消
       if (e) {
@@ -175,6 +229,7 @@ export default {
               })
               this.clear()
               this.dialogVisible = false
+              this.getDishes()
               break
           }
         }
@@ -210,6 +265,7 @@ export default {
             })
             this.clear()
             this.dialogVisible = false
+            this.getDishes()
           }
         }
       )
@@ -224,9 +280,9 @@ export default {
       }).then(() => {
         disheDel(data).then(
           res => {
-            console.log(res)
-            if (res.code === 1) {
+            if (res.data.code === 1) {
               this.$message({type: 'success', message: '菜品删除成功!'})
+              this.getDishes()
             }
           }
         )
@@ -239,12 +295,31 @@ export default {
       for (let val in this.dishesForm) {
         this.dishesForm[val] = ''
       }
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      if (this.dishesCID === '全部') {
+        this.getDishes(val)
+      } else {
+        this.getDishesCID(this.curCID, val)
+      }
+      console.log(`当前页: ${val}`)
+    },
+    pagesChange (val, total) {
+      this.pages.currentPage1 = val // 当前第几页
+      this.pages.total = total  // 菜品总条目数
+      this.pages.size = 10 // 每页显示条目个数
     }
   }
 }
 </script>
 
 <style>
+.wrap-content {
+  overflow: auto;
+}
 .demo-table-expand {
   font-size: 0;
 }
