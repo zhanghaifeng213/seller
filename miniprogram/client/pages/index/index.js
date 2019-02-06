@@ -1,8 +1,10 @@
-// import apis from '../../modules/api'
+import apis from '../../modules/api'
 
 Page({
   data: {
-    showCameraAuthLayer: false, // 授权信息
+    tables: [],
+    tableIndex: 0,
+
     list: [{
       name: '车品',
       url: '',
@@ -22,36 +24,61 @@ Page({
     }]
   },
   onLoad(option) {
-    const { num } = option;
-    if(num) {
+    const {
+      num
+    } = option;
+    if (num) {
       wx.navigateTo({
         url: `/pages/menu/menu?id=${num}`
       })
     }
+
+    this.getTableNums();
   },
   onShow() {},
   viewInfo: function (e) {
-    const { url } = e.currentTarget.dataset.item;
-    if (url) wx.navigateTo({ url });
+    const {
+      url
+    } = e.currentTarget.dataset.item;
+    if (url) wx.navigateTo({
+      url
+    });
+  },
+  bindTableChange(event) {
+    this.setData({
+      tableIndex: event.detail.value
+    });
+  },
+  getTableNums() {
+    wx.fetch({
+      url: apis.getTableList,
+    }).then(res => {
+      if (+res.code === 1) {
+        this.setData({
+          tables: res.data.list
+        })
+      }
+    })
   },
   // 选择桌号去点单
   selectNumber() {
-    wx.showActionSheet({
-      itemList: ['1号桌'],
-      success(res) {
-        wx.navigateTo({
-          url: `/pages/menu/menu?id=${res.tapIndex}`
-        })
-      },
-      fail(res) {
-        console.log(res.errMsg)
-      }
+    const { _id, num } = this.data.tables[this.data.tableIndex];
+    wx.navigateTo({
+      url: `/pages/menu/menu?id=${_id}&num=${num}`
     })
   },
   // 管理员登录
   adminLogin() {
-    wx.navigateTo({
-      url: '/pages/admin/center'
+    wx.showModal({
+      title: '温馨提示',
+      content: `此功能仅对管理员开放，是否继续?`,
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: '/pages/admin/center'
+          })
+        } else if (res.cancel) {}
+      }
     })
   }
 });

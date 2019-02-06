@@ -38,7 +38,8 @@ Page({
       item
     } = event.currentTarget.dataset;
     let params = '';
-    if (item && item.id) {
+    if (item) {
+      item.id = item._id;
       params = `?item=${encodeURIComponent(JSON.stringify(item))}`
     }
     wx.navigateTo({
