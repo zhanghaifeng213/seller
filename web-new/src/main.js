@@ -10,6 +10,17 @@ import 'element-ui/lib/theme-chalk/index.css'
 import http from '@/libs/httpRequest'
 
 import store from './store'
+import VueSocketIO from 'vue-socket.io'
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: process.env.SOCKETIO,
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  }
+}))
 
 Vue.use(Element)
 
