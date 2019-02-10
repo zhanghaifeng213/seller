@@ -6,12 +6,18 @@ const tableNumber = () => {
         method: 'get'
     })
 }
-
 const tableAdd = (data) => {
     return http({
-      url: http.adornUrl('/table/add'),
-      method: 'post',
-      data: data
+        url: http.adornUrl('/table/add'),
+        method: 'post',
+        data: data
     })
 }
-export { tableNumber, tableAdd }
+const tableDel = (data) => {
+    return http({
+        url: http.adornUrl('/table/delete'),
+        method: 'post',
+        data: data
+    })
+}
+export { tableNumber, tableAdd, tableDel }

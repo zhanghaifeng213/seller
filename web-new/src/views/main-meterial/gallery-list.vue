@@ -37,14 +37,13 @@
 </template>
 
 <script>
-
-import http from '@/libs/httpRequest'
+import http from "@/libs/httpRequest";
 
 export default {
   props: {
     group: {
       type: String,
-      value: 'default'
+      value: "default"
     },
     pageNum: {
       type: Number,
@@ -57,13 +56,17 @@ export default {
   },
   data() {
     return {
-      actionUrl: `${process.env.NODE_ENV !== 'production' ? '/proxyApi/' : process.env.API_ROOT}/image/upload`,
+      actionUrl: `${
+        process.env.NODE_ENV !== "production"
+          ? "/proxyApi/"
+          : process.env.API_ROOT
+      }/image/upload`,
       list: [],
       extData: {
         group: this.group,
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-        name: '未命名'
+        name: "未命名"
       },
       fileList: []
     };
@@ -77,12 +80,23 @@ export default {
     },
     getList() {
       http({
-        url: http.adornUrl(`/image/query?group=${this.group}&pageNum=${this.pageNum}&pageSize=${this.pageSize}`),
-        method: 'get',
+        url: http.adornUrl(
+          `/image/query?group=${this.group}&pageNum=${this.pageNum}&pageSize=${
+            this.pageSize
+          }`
+        ),
+        method: "get",
         data: {}
       }).then(res => {
-        this.list = res.data.data.list || [];
-      })
+        if (res.data.data.list.length > 0) {
+          res.data.data.list.map(item => {
+            item.url = process.env.API_ROOT + item.url;
+          });
+          this.list = res.data.data.list;
+        } else {
+          this.list = [];
+        }
+      });
     },
 
     submitUpload() {
@@ -99,7 +113,7 @@ export default {
     handlePreview(file) {
       console.log(file);
     }
-  },
+  }
 };
 </script>
 

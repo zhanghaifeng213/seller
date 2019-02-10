@@ -7,6 +7,12 @@ export const clist = (params) => {
     method: 'get'
   })
 }
+export const hlist = (params) => {
+  return http({
+    url: http.adornUrl('/order/hlist?') + qs.stringify(params),
+    method: 'get'
+  })
+}
 export const update = (data) => {
   return http({
     url: http.adornUrl('/order/update'),

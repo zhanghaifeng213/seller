@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p class="h3">main-dishes</p>
     <el-button @click="dialogVisible = true">添加菜品</el-button>
     <el-select v-model="dishesCID" placeholder="所属分类">
       <el-option label="全部" value="全部"></el-option>
@@ -49,7 +48,7 @@
         label="菜品图片"
         width="300">
         <template slot-scope="scope">
-          <img :src="scope.row.img" :alt="scope.row.name" width="180" height="60">
+          <img :src="scope.row.img" :alt="scope.row.name" width="60" height="60">
         </template>
       </el-table-column>
       <el-table-column
@@ -88,30 +87,37 @@
   </div>
 </template>
 <script>
-import { dishes, types, disheAdd, disheDel, disheEdit, dishesByCID } from '@/fetch/dishes'
-import DishesEdit from './dishes-edit'
+import {
+  dishes,
+  types,
+  disheAdd,
+  disheDel,
+  disheEdit,
+  dishesByCID
+} from "@/fetch/dishes";
+import DishesEdit from "./dishes-edit";
 
 export default {
-  name: 'main-dishes',
+  name: "main-dishes",
   components: {
     DishesEdit
   },
-  data () {
+  data() {
     return {
-      curID: '',
-      curCID: '',
-      dishesCID: '全部',
+      curID: "",
+      curCID: "",
+      dishesCID: "全部",
       dialogVisible: false,
       status: 0, // 0:添加 1:编辑
       dishesDatas: [], // 菜单列表
       typeList: [], // 分类列表
       // 表单
       dishesForm: {
-        name: '',
-        img: '',
-        price: '',
-        cid: '',
-        desc: ''
+        name: "",
+        img: "",
+        price: "",
+        cid: "",
+        desc: ""
       },
       // 分页信息
       pages: {
@@ -119,201 +125,191 @@ export default {
         total: 7,
         size: 1
       }
-    }
+    };
   },
   watch: {
     // 分类查询
-    dishesCID (curr, old) {
-      if (curr === '全部') {
-        this.getDishes()
+    dishesCID(curr, old) {
+      if (curr === "全部") {
+        this.getDishes();
       } else {
-        this.getDishesCID(curr)
+        this.getDishesCID(curr);
       }
     }
   },
-  mounted: function () {
-    this.getTypes()
+  mounted: function() {
+    this.getTypes();
   },
   computed: {
     // 获取分类名称
-    cidStr () {
+    cidStr() {
       return cid => {
         for (let item of this.typeList) {
           if (item.id === cid) {
-            return item.name
+            return item.name;
           }
         }
-      }
+      };
     }
   },
   methods: {
     // 获取类别
-    getTypes () {
-      types().then(
-        res => {
-          const {code, data} = res.data
-          if (code  === 1) {
-            this.typeList = data.list
+    getTypes() {
+      types()
+        .then(res => {
+          const { code, data } = res.data;
+          if (code === 1) {
+            this.typeList = data.list;
             this.$nextTick(() => {
-              this.getDishes()
-            })
+              this.getDishes();
+            });
           }
-        }
-      ).catch(
-        err => {
-          console.log(err)
-        }
-      )
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 获取全部菜品
-    getDishes (number = 1) {
-      dishes({pageNum: number}).then(
-        res => {
-          const {code, data} = res.data
+    getDishes(number = 1) {
+      dishes({ pageNum: number })
+        .then(res => {
+          const { code, data } = res.data;
           if (code === 1) {
-            this.dishesDatas = data.list
-            this.dishesCID = '全部'
-            this.pagesChange(number, data.totalPage)
+            this.dishesDatas = data.list;
+            this.dishesCID = "全部";
+            this.pagesChange(number, data.totalPage);
           }
-        }
-      ).catch(
-        err => {
-          console.log(err)
-        }
-      )
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // CID获取菜品
-    getDishesCID (cid, number = 1) {
-      this.curCID = cid
-      dishesByCID({cid: cid, pageNum: number}).then(
-        res => {
-          const {code, data} = res.data
-          if (code === 1) {
-            this.dishesDatas = data.list
-            this.pagesChange(number, data.totalPage)
-          }
+    getDishesCID(cid, number = 1) {
+      this.curCID = cid;
+      dishesByCID({ cid: cid, pageNum: number }).then(res => {
+        const { code, data } = res.data;
+        if (code === 1) {
+          this.dishesDatas = data.list;
+          this.pagesChange(number, data.totalPage);
         }
-      )
+      });
     },
     // 添加和修改的判断
-    dealDatas (e) {
+    dealDatas(e) {
       // 判断是确定还是取消
       if (e) {
         if (this.status) {
-          this.editDo()
+          this.editDo();
         } else {
-          this.add()
+          this.add();
         }
-        console.log('确定')
+        console.log("确定");
       } else {
-        this.dialogVisible = false
-        this.clear()
+        this.dialogVisible = false;
+        this.clear();
       }
     },
     // 添加菜品
-    add () {
-      disheAdd(this.dishesForm).then(
-        res => {
-          const {code, msg, errMsg} = res.data
+    add() {
+      disheAdd(this.dishesForm)
+        .then(res => {
+          const { code, msg, errMsg } = res.data;
           switch (code) {
             case 0:
               this.$message({
                 message: errMsg,
-                type: 'warning'
-              })
-              break
+                type: "warning"
+              });
+              break;
             case 1:
               this.$message({
                 message: msg,
-                type: 'success'
-              })
-              this.clear()
-              this.dialogVisible = false
-              this.getDishes()
-              break
+                type: "success"
+              });
+              this.clear();
+              this.dialogVisible = false;
+              this.getDishes();
+              break;
           }
-        }
-      ).catch(
-        err => {
+        })
+        .catch(err => {
           this.$message({
-            message: '添加失败',
-            type: 'error'
-          })
-        }
-      )
+            message: "添加失败",
+            type: "error"
+          });
+        });
     },
     // 编辑按钮
-    edit (item) {
+    edit(item) {
       for (let val in this.dishesForm) {
-        this.dishesForm[val] = item[val]
+        this.dishesForm[val] = item[val];
       }
-      this.curID = item._id
-      this.status = 1
-      this.dialogVisible = true
+      this.curID = item._id;
+      this.status = 1;
+      this.dialogVisible = true;
     },
     // 编辑菜品
-    editDo () {
-      let data = this.dishesForm
-      data.id = this.curID
-      disheEdit(data).then(
-        res => {
-          const {code, msg} = res.data
-          if (code === 1) {
-            this.$message({
-              message: msg,
-              type: 'success'
-            })
-            this.clear()
-            this.dialogVisible = false
-            this.getDishes()
-          }
+    editDo() {
+      let data = this.dishesForm;
+      data.id = this.curID;
+      disheEdit(data).then(res => {
+        const { code, msg } = res.data;
+        if (code === 1) {
+          this.$message({
+            message: msg,
+            type: "success"
+          });
+          this.clear();
+          this.dialogVisible = false;
+          this.getDishes();
         }
-      )
+      });
     },
     // 删除菜品
-    del (id, name) {
-      const data = {id: id}
-      this.$confirm(`您正在删除菜品，是否确认删除《${name}》？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        disheDel(data).then(
-          res => {
-            if (res.data.code === 1) {
-              this.$message({type: 'success', message: '菜品删除成功!'})
-              this.getDishes()
-            }
-          }
-        )
-      }).catch((err) => {
-        console.log(err)
+    del(id, name) {
+      const data = { id: id };
+      this.$confirm(`您正在删除菜品，是否确认删除《${name}》？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          disheDel(data).then(res => {
+            if (res.data.code === 1) {
+              this.$message({ type: "success", message: "菜品删除成功!" });
+              this.getDishes();
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 清空表单
-    clear () {
+    clear() {
       for (let val in this.dishesForm) {
-        this.dishesForm[val] = ''
+        this.dishesForm[val] = "";
       }
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      if (this.dishesCID === '全部') {
-        this.getDishes(val)
+      if (this.dishesCID === "全部") {
+        this.getDishes(val);
       } else {
-        this.getDishesCID(this.curCID, val)
+        this.getDishesCID(this.curCID, val);
       }
-      console.log(`当前页: ${val}`)
+      console.log(`当前页: ${val}`);
     },
-    pagesChange (val, total) {
-      this.pages.currentPage1 = val // 当前第几页
-      this.pages.total = total  // 菜品总条目数
-      this.pages.size = 10 // 每页显示条目个数
+    pagesChange(val, total) {
+      this.pages.currentPage1 = val; // 当前第几页
+      this.pages.total = total; // 菜品总条目数
+      this.pages.size = 10; // 每页显示条目个数
     }
   }
-}
+};
 </script>
 
 <style>

@@ -1,10 +1,10 @@
 <template>
     <aside class="wrap-sidebar">
         <ul>
-            <li class="link"><router-link :to="{name: 'types'}">菜品分类管理</router-link></li>
-            <li class="link"><router-link :to="{name: 'dishes'}">菜单管理</router-link></li>
-            <li class="link"><router-link :to="{name: 'tables'}">桌号管理</router-link></li>
-            <li class="link" @click="clear">
+            <li class="link" :class="{'active':currentIndex===0}" @click="currentIndex=0"><router-link :to="{name: 'types'}">菜品分类管理</router-link></li>
+            <li class="link" :class="{'active':currentIndex===1}" @click="currentIndex=1"><router-link :to="{name: 'dishes'}">菜单管理</router-link></li>
+            <li class="link" :class="{'active':currentIndex===2}" @click="currentIndex=2"><router-link :to="{name: 'tables'}">桌号管理</router-link></li>
+            <li class="link" :class="{'active':currentIndex===3}" @click="clear">
                 <router-link :to="{name: 'order'}">
                     <el-badge v-if="newOrderCount>0" :value="newOrderCount" class="item">
                                 订单管理
@@ -12,10 +12,10 @@
                     <span v-else>订单管理</span>
                 </router-link>
             </li>
-            <li class="link"><router-link :to="{name: 'income'}" >收入管理</router-link></li>
-            <li class="link"><router-link :to="{name: 'records'}">历史订单</router-link></li>
-            <li v-if="role==0" class="link"><router-link :to="{name: 'info'}">用户管理</router-link></li>
-            <li class="link"><router-link :to="{name: 'meterial'}">素材管理</router-link></li>
+            <li class="link" :class="{'active':currentIndex===4}" @click="currentIndex=4"><router-link :to="{name: 'income'}" >收入管理</router-link></li>
+            <li class="link" :class="{'active':currentIndex===5}" @click="currentIndex=5"><router-link :to="{name: 'records'}">历史订单</router-link></li>
+            <li v-if="role==0" class="link" :class="{'active':currentIndex===6}" @click="currentIndex=6"><router-link :to="{name: 'info'}">用户管理</router-link></li>
+            <li class="link" :class="{'active':currentIndex===7}" @click="currentIndex=7"><router-link :to="{name: 'meterial'}">素材管理</router-link></li>
         </ul>
     </aside>
 </template>
@@ -24,7 +24,8 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      newOrderCount: 0
+      newOrderCount: 0,
+      currentIndex: 0
     };
   },
   computed: {
@@ -32,14 +33,14 @@ export default {
       role: state => state.role
     })
   },
-  mounted() {
-    this.sockets.subscribe("NEW_ORDER", data => {
+  sockets: {
+    NEW_ORDER: function(data) {
       this.newOrderCount++;
-      // this.msg = data.message;
-    });
+    }
   },
   methods: {
     clear() {
+      this.currentIndex = 3;
       this.newOrderCount = 0;
     }
   }
@@ -57,6 +58,11 @@ export default {
     padding: 10px 0;
     a {
       color: #fff;
+    }
+    &.active {
+      a {
+        color: #f60;
+      }
     }
   }
 }
