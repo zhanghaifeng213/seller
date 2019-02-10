@@ -35,7 +35,6 @@ export default {
   mounted() {
     this.sockets.subscribe("NEW_ORDER", data => {
       this.newOrderCount++;
-      console.log(data);
       // this.msg = data.message;
     });
   },
