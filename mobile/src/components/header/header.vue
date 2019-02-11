@@ -9,7 +9,7 @@
             <span class="brand"></span>
             <span class="name">{{seller.name}}</span>
           </div>
-          <div class="description">
+          <div class="description" v-if="seller.number">
             {{seller.number}}号桌
             <!-- {{seller.description}} / {{seller.deliveryTime}}分钟送达 -->
           </div>

@@ -233,7 +233,7 @@ export default {
       }
     },
     passCode() {
-      eventBus.$emit("passCode");
+      eventBus.$emit("passCode", this.selectFoods);
     }
   },
   components: {

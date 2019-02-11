@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/jquery": "^3.3.22",
+    "axios": "^0.18.0",
     "better-scroll": "^0.1.15",
     "jquery": "^3.3.1",
     "vue": "^2.4.2",

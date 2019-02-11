@@ -46,6 +46,7 @@
 import { urlParse } from "common/js/util";
 import { data } from "common/js/data";
 import vHeader from "./components/header/header.vue";
+import { addOrder } from "@/api/order.js";
 export default {
   data() {
     return {
@@ -64,15 +65,23 @@ export default {
   },
   created() {
     this.seller = Object.assign({}, this.seller, data().seller);
-    eventBus.$on("passCode", () => {
-      console.log(this.startRecognize);
-      this.startRecognize();
+    eventBus.$on("passCode", val => {
+      if (this.startRecognize) {
+        this.startRecognize(val);
+      }
     });
   },
   methods: {
     // 创建扫描控件
-    startRecognize() {
+    startRecognize(val) {
       this.show = false;
+      let list = [];
+      val.forEach(item => {
+        list.push({
+          menuItem: val.id,
+          count: val.count
+        });
+      });
       this.$nextTick(() => {
         if (!window.plus) return;
         // eslint-disable-next-line
@@ -100,13 +109,22 @@ export default {
             break;
         }
         // 获得code
-        result = result.replace(/\n/g, "");
+        result = json.parse(result.replace(/\n/g, ""));
         // alert(result);
-        if (parseInt(result) > 0 && parseInt(result) < 100) {
-          that.seller.number = parseInt(result);
+        if (parseInt(result) > 0) {
+          that.seller.number = parseInt(result.number);
           that.scan.cancel();
           that.scan.close();
-          alert(parseInt(result) + "号桌");
+          let obj = {
+            tableNum: result.id,
+            list
+          };
+          addOrder(obj).then(res => {
+            if (res.data.code == 1) {
+              alert(parseInt(result.number) + "号桌 点单成功");
+            }
+          });
+
           that.show = true;
         } else {
           alert("二维码错误");

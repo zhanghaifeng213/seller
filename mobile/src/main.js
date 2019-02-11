@@ -8,6 +8,8 @@ import goods from 'components/goods/goods';
 import ratings from 'components/ratings/ratings';
 import seller from 'components/seller/seller';
 import 'common/stylus/index.styl';
+import http from '@/libs/httpRequest'
+Vue.http = Vue.prototype.$http = http
 Vue.use(VueRouter);
 Vue.use(VueResource);
 window.eventBus = new Vue()
