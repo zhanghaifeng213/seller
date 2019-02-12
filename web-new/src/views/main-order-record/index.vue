@@ -8,7 +8,7 @@
     style="width: 100%">
       <el-table-column type="index" width="80px"></el-table-column>
       <el-table-column prop="tableNum" width="100px" sortable label="桌号">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.tableNum">
           {{scope.row.tableNum.num}}
         </template>
       </el-table-column>
@@ -70,6 +70,9 @@ export default {
       hlist(data).then(res => {
         res.data.data.list.map(item => {
           item.created = new Date(item.created).toLocaleString();
+          item.list.map(it => {
+            it.total = it.menuDetail.price * it.count;
+          });
         });
         this.orderList = res.data.data.list;
         this.total = res.data.data.totalPage;

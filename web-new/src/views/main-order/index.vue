@@ -8,7 +8,7 @@
       style="width: 100%">
       <el-table-column type="index" width="80px"></el-table-column>
       <el-table-column prop="tableNum" width="100px" sortable label="桌号">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.tableNum">
           {{scope.row.tableNum.num}}
         </template>
       </el-table-column>
