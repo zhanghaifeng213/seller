@@ -7,10 +7,11 @@ const addOrder = (data) => {
     data
   })
 }
-export const list = (id) => {
+const list = (data) => {
   return http({
-    url: http.adornUrl('/order/list?id=' + id),
-    method: 'get'
+    url: http.adornUrl('/order/list'),
+    method: 'post',
+    data
   })
 }
-export { addOrder }
+export { addOrder, list }

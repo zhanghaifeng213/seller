@@ -128,6 +128,14 @@ export default {
           addOrder(obj).then(res => {
             if (res.data.code == 1) {
               let orderNum = res.data.data;
+              if (localStorage.getItem("orderNum")) {
+                let arra = JSON.parse(localStorage.getItem("orderNum"));
+                arra.push(orderNum);
+                localStorage.setItem("orderNum", JSON.stringify(arra));
+              } else {
+                let arra = [orderNum];
+                localStorage.setItem("orderNum", JSON.stringify(arra));
+              }
               eventBus.$emit("suc-ordered");
               alert(parseInt(result.number) + "号桌 点单成功");
             }
