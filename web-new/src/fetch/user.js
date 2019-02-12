@@ -38,3 +38,4 @@ export const userUpdate = (data) => {
     data: data
   })
 }
+

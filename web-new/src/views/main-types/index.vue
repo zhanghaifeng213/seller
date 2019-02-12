@@ -31,6 +31,7 @@
           <el-button size="mini" @click="handleFinish(scope.$index, scope.row)" v-if="scope.row.showEdit">完成</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-else>编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleCancel(scope.$index, scope.row)" v-if="scope.row.showEdit">取消</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -108,6 +109,10 @@ export default {
           message: '已取消删除'
         })       
       })
+    },
+    handleCancel(index, row) {
+      row.showEdit = false
+      this.$message('已取消');
     },
     addTypesList() {
       if (!this.addList.name) {

@@ -23,19 +23,21 @@
       </el-table-column>
       <el-table-column prop="role" label="权限" width="150">
         <template slot-scope="scope">
-          <el-input :value="scope.row.role" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]"></el-input>
-          <span v-else>{{scope.row.role}}</span>
+          <span>{{scope.row.role}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="avatar" label="头像" width="300">
+      <el-table-column prop="avatar" label="头像" width="120">
         <template slot-scope="scope">
-          <el-input :value="scope.row.avatar" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]"></el-input>
+          <el-upload class="avatar-uploader" action="/proxyApi/image/upload" :show-file-list="false" :on-success="handleAvatarSuccess" v-if='scope.row.showEdit' :data="imageData">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
           <div class="img-wrap" v-else>
             <img :src="scope.row.avatar" alt="">
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="password" label="密码" width="150">
+      <el-table-column prop="password" label="密码" width="300">
         <template slot-scope="scope">
           <el-input :value="scope.row.password" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]" type="password"></el-input>
         </template>
@@ -45,6 +47,7 @@
           <el-button size="mini" @click="handleFinish(scope.$index, scope.row)" v-if="scope.row.showEdit">完成</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-else>编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleCancel(scope.$index, scope.row)" v-if="scope.row.showEdit">取消</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,11 +63,16 @@ export default {
       addList: {
         username: '',
         password: ''
+      },
+      imageUrl: '',
+      imageData: {
+        group: 'avatar',
+        name: '用户头像'
       }
     }
   },
   methods: {
-    ...mapActions(['handleUserReg','handleGetUserLists','handleUpdateUser']),
+    ...mapActions(['handleUserReg','handleGetUserLists','handleUpdateUser','handleDeleteUser']),
     handleEdit (index, row) {
       row.showEdit = true
     },
@@ -80,6 +88,9 @@ export default {
             message: '添加成功!'
           })
           row.showEdit = false
+          this.getUserLists()
+          console.log(row.avatar)
+          location.reload()
         } else {
           this.$message.error(res.data.data)
         }
@@ -87,20 +98,28 @@ export default {
         console.log(res)
       })
     },
+    handleDelete(index, row) {
+      const userId = {}
+      userId.id = row._id
+      console.log(userId)
+    },
+    handleCancel(index, row) {
+      row.showEdit = false
+      this.$message('已取消')
+    },
     getUserLists() {
       this.handleGetUserLists().then(res => {
         res.data.data.userLists.forEach(item => {
           item.showEdit = false
-          if (item.avatar.indexOf('http://116.62.147.91:3030') === -1) {
-            item.avatar = 'http://116.62.147.91:3030' + item.avatar
-          }
           if (item.role === '0') {
+            // 判断 0 或 1
             item.role = '超级管理员'
           } else if (item.role === '1') {
             item.role = '管理员'
           }
         })
         this.userLists = res.data.data.userLists
+        console.log(this.userLists)
       }).catch(err => {
         console.log(err)
       }) 
@@ -124,7 +143,31 @@ export default {
           console.log(err)
         })
       }
-    }
+    },
+    handleAvatarSuccess(res, file) {
+       this.imageUrl = URL.createObjectURL(file.raw)
+       console.log(res)
+    },
+    
+     beforeAvatarUpload(file) {
+       console.log(file)
+        const isJPG = file.type === 'image/jpeg'
+        const isLt2M = file.size / 1024 / 1024 < 2
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!')
+        }
+        return isJPG && isLt2M;
+    },
+    // uploadAvatar(file) {
+    //   const formData = new FormData()
+    //   formData.append('file', file.file)
+    //   formData.append('file', file.file)
+      
+    // }
   },
   mounted() {
     this.getUserLists()
@@ -136,9 +179,31 @@ export default {
 .img-wrap {
   width: 100px;
   height: 100px;
-  margin: 0 auto;
 }
 .img-wrap img{
   width: 100%;
 }
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+  }
+  .avatar {
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
 </style>

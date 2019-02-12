@@ -4,7 +4,7 @@ import axios from 'axios'
 import { login, info } from '@/fetch/user'
 import { getTypeInfo } from '@/fetch/types'
 import { addTypesList, deleteType, updataType } from '../fetch/types'
-import { inquire, userReg, userUpdate } from '../fetch/user'
+import { inquire, userReg, userUpdate, userDelete } from '../fetch/user'
 
 Vue.use(Vuex)
 
