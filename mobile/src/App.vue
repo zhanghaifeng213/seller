@@ -127,6 +127,7 @@ export default {
           };
           addOrder(obj).then(res => {
             if (res.data.code == 1) {
+              let orderNum = res.data.data;
               eventBus.$emit("suc-ordered");
               alert(parseInt(result.number) + "号桌 点单成功");
             }
