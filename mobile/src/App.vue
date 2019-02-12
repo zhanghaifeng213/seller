@@ -11,8 +11,11 @@
           <router-link :to="{ path: '/ratings' }">评论</router-link>
         </div> -->
         <div class="tab-item">
-          <router-link :to="{ path: '/seller' }">商家</router-link>
+          <router-link :to="{ path: '/record' }">下单记录</router-link>
         </div>
+        <!-- <div class="tab-item">
+          <router-link :to="{ path: '/seller' }">商家</router-link>
+        </div> -->
       </div>
       <keep-alive>
         <router-view :seller="seller"></router-view>
@@ -47,6 +50,7 @@ import { urlParse } from "common/js/util";
 import { data } from "common/js/data";
 import vHeader from "./components/header/header.vue";
 import { addOrder } from "@/api/order.js";
+import { mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
@@ -72,14 +76,15 @@ export default {
     });
   },
   methods: {
+    ...mapMutations(["auth_success"]),
     // 创建扫描控件
     startRecognize(val) {
       this.show = false;
       let list = [];
       val.forEach(item => {
         list.push({
-          menuItem: val.id,
-          count: val.count
+          menuItem: item.id,
+          count: item.count
         });
       });
       this.$nextTick(() => {
@@ -109,9 +114,10 @@ export default {
             break;
         }
         // 获得code
-        result = json.parse(result.replace(/\n/g, ""));
+        result = JSON.parse(result);
+        this.auth_success(result);
         // alert(result);
-        if (parseInt(result) > 0) {
+        if (parseInt(result.number) > 0) {
           that.seller.number = parseInt(result.number);
           that.scan.cancel();
           that.scan.close();
@@ -121,6 +127,7 @@ export default {
           };
           addOrder(obj).then(res => {
             if (res.data.code == 1) {
+              eventBus.$emit("suc-ordered");
               alert(parseInt(result.number) + "号桌 点单成功");
             }
           });
@@ -130,7 +137,7 @@ export default {
           alert("二维码错误");
           that.scan.cancel();
           that.scan.close();
-          that.scan.start();
+          // that.scan.start();
         }
       }
     },
