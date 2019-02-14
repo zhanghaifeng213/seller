@@ -7,7 +7,11 @@ import VueResource from 'vue-resource';
 import goods from 'components/goods/goods';
 import ratings from 'components/ratings/ratings';
 import seller from 'components/seller/seller';
+import record from 'components/record/record';
+import store from './store'
 import 'common/stylus/index.styl';
+import http from '@/libs/httpRequest'
+Vue.http = Vue.prototype.$http = http
 Vue.use(VueRouter);
 Vue.use(VueResource);
 window.eventBus = new Vue()
@@ -17,11 +21,13 @@ var router = new VueRouter({
     { path: '/', redirect: '/goods' },
     { path: '/goods', component: goods },
     { path: '/ratings', component: ratings },
-    { path: '/seller', component: seller }
+    { path: '/seller', component: seller },
+    { path: '/record', component: record }
   ]
 });
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app');
 

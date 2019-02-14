@@ -9,7 +9,7 @@
             <span class="brand"></span>
             <span class="name">{{seller.name}}</span>
           </div>
-          <div class="description">
+          <div class="description" v-if="seller.number">
             {{seller.number}}号桌
             <!-- {{seller.description}} / {{seller.deliveryTime}}分钟送达 -->
           </div>
@@ -41,12 +41,12 @@
           <div class="star-wrapper">
             <star :size="48" :score="seller.score"></star>
           </div>
-          <div class="title">
+          <div class="title" v-if="0">
             <div class="line"></div>
             <div class="text">优惠信息</div>
             <div class="line"></div>
           </div>
-          <ul v-if="seller.supports" class="supports">
+          <ul v-if="seller.supports&&0" class="supports">
             <li class="support-item" v-for="item,$index in seller.supports">
               <span class="icon" :class="classMap[seller.supports[$index].type]"></span>
               <span class="text">{{seller.supports[$index].description}}</span>

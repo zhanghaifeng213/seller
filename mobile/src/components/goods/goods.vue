@@ -1,8 +1,8 @@
 <template>
 <div>
-    <div class="goods">
-      <div class="menu-wrapper" ref="menuWrapper">
-          <ul>
+    <div class="goods" >
+      <div class="menu-wrapper" ref="menuWrapper" >
+          <ul v-if="goods.length>0">
               <li v-for="(item, index) in goods" class="menu-item border-1px" :class="{'current': currentIndex === index}" @click.stop.prevent="selectMenu($event,index)" ref="menuList">
                   <span class="text">
                       <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
@@ -11,18 +11,18 @@
           </ul>
       </div>
       <div class="foods-wrapper" ref="foodWrapper">
-          <ul>
+          <ul v-if="goods.length>0">
               <li v-for="item in goods" class="food-list food-list-hook">
                   <h1 class="title">{{item.name}}</h1>
                   <ul>
                       <li v-for="food in item.foods" class="food-item border-1px">
                           <div class="icon">
-                              <img width=57 height=57 :src="food.icon">
+                              <img width=57 height=57 :src="food.image">
                           </div>
                           <div class="content">
                               <h2 class="name">{{food.name}}</h2>
                               <p class="desc">{{food.description}}</p>
-                              <div class="extra">
+                              <div class="extra" v-if="0">
                                   <span>月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                               </div>
                               <price :food="food"></price>
@@ -49,6 +49,8 @@ import cartcontrol from "components/cartcontrol/cartcontrol";
 import food from "components/food/food";
 import price from "components/price/price";
 import { data } from "common/js/data";
+import { dishes } from "@/api/dishes.js";
+
 export default {
   props: {
     seller: {
@@ -64,14 +66,49 @@ export default {
     };
   },
   created() {
+    this.getList();
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
-    this.goods = data().goods;
-    this.$nextTick(() => {
-      this._initScroll();
-      this._calculateHeight();
+  },
+  mounted() {
+    eventBus.$on("suc-ordered", () => {
+      this.selectedFood = {};
     });
   },
   methods: {
+    getList() {
+      dishes().then(res => {
+        if (res.data.code == 1) {
+          let data = res.data.data.list;
+          let arr = [];
+          let obj = {};
+          data.forEach(item => {
+            arr.push(item.cid.name);
+          });
+          arr = Array.from(new Set(arr));
+          arr = arr.map(item => {
+            return (item = { name: item, type: 0, foods: [] });
+          });
+          data.forEach(item => {
+            arr.forEach(it => {
+              if (item.cid.name === it.name) {
+                it.foods.push({
+                  name: item.name,
+                  price: item.price,
+                  description: item.desc,
+                  image: item.img,
+                  id: item._id
+                });
+              }
+            });
+          });
+          this.goods = arr;
+          this.$nextTick(() => {
+            this._initScroll();
+            this._calculateHeight();
+          });
+        }
+      });
+    },
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true

@@ -1,0 +1,36 @@
+<!--about.wxml-->
+<view class="page">
+  <view class="page__hd">
+    <view class="page__title">管理中心</view>
+    <view class="page__desc">Management center</view>
+  </view>
+
+  <view class="page__bd page__bd_spacing">
+    <view class="kind-list">
+      <block wx:for="{{panal}}" wx:key="id">
+        <view class="kind-list__item">
+          <view class="weui-flex kind-list__item-hd" data-url="{{item.url}}" bindtap="navigateTo">
+            <view class="weui-flex__item">{{item.text}}</view>
+            <image class="kind-list__img" src="{{item.img}}"></image>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="kind-list">
+      <view class="kind-list__item">
+        <view class="weui-flex kind-list__item-hd" data-url="./personal" bindtap="navigateTo">
+          <view class="weui-flex__item">个人信息管理</view>
+          <image class="kind-list__img" src="../../images/setting.png"></image>
+        </view>
+      </view>
+      <view class="kind-list__item">
+        <view class="weui-flex kind-list__item-hd" bindtap="logout">
+          <view class="weui-flex__item">退出登录</view>
+          <image class="kind-list__img" src="../../images/logout.png"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

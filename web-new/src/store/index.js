@@ -11,63 +11,62 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     status: '',
-    token: localStorage.getItem('token') || '',
+    token: sessionStorage.getItem('token') || '',
     username: '',
     role: '',
     avatar: '',
-    id: '',
-    token: ''
+    id: ''
   },
   mutations: {
-    auth_request (state) {
+    auth_request(state) {
       state.status = 'lodaing'
     },
-    auth_success (state, payload) {
+    auth_success(state, payload) {
       state.status = 'success'
       state.username = payload.username
       state.role = payload.role
       state.avatar = payload.avatar
       state.id = payload.id
     },
-    setToken (state, val) {
+    setToken(state, val) {
       state.token = val
     }
   },
   actions: {
-    handleLogin ({ commit }, user) {
+    handleLogin({ commit }, user) {
       return new Promise((resolve, reject) => {
         login(user).then(res => {
           if (res.data.code === 1) {
             const token = res.data.data
             commit('setToken', token)
-            localStorage.setItem('token', token)
+            sessionStorage.setItem('token', token)
             resolve(res)
           } else {
-            reject()
+            resolve(false)
           }
         }).catch((err) => {
-          localStorage.removeItem('token')
+          sessionStorage.removeItem('token')
           reject(err)
         })
       })
     },
-    logout ({ commit }) {
+    logout({ commit }) {
       return new Promise((resolve, reject) => {
-        localStorage.removeItem('token')
+        sessionStorage.removeItem('token')
         delete axios.defaults.headers.common['Authorization']
         resolve()
       })
     },
-    handleUserInfo ({ commit }) {
+    handleUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         info()
           .then(res => {
-            if (res.data.code == 1) {
+            if (res.data.code === 1) {
               const data = res.data.data
               commit('auth_success', data)
               resolve(data)
             } else {
-              reject()
+              resolve(false)
             }
           })
           .catch(err => {
@@ -75,7 +74,7 @@ export default new Vuex.Store({
           })
       })
     },
-    handleGetTypeInfo ({commit}) {
+    handleGetTypeInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getTypeInfo().then(res => {
           if (res.data.code === 1) {
@@ -87,7 +86,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleAddTypesList ({ commit }, list) {
+    handleAddTypesList({ commit }, list) {
       const typeslist = {}
       typeslist.name = list.name
       if (list.desc) {
@@ -101,7 +100,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleDeleteType ({commit}, id) {
+    handleDeleteType({ commit }, id) {
       const itemId = {}
       itemId.id = id
       return new Promise((resolve, reject) => {
@@ -112,7 +111,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleUpdataType ({commit}, data) {
+    handleUpdataType({ commit }, data) {
       return new Promise((resolve, reject) => {
         updataType(data).then(res => {
           resolve(res)
@@ -121,7 +120,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleGetUserLists ({commit}) {
+    handleGetUserLists({ commit }) {
       const data = {
         pageNum: 1,
         pageSize: 10
@@ -134,7 +133,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleUserReg ({commit}, data) {
+    handleUserReg({ commit }, data) {
       return new Promise((resolve, reject) => {
         userReg(data).then(res => {
           resolve(res)
@@ -143,7 +142,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleUpdateUser ({commit}, data) {
+    handleUpdateUser({ commit }, data) {
       return new Promise((resolve, reject) => {
         userUpdate(data).then(res => {
           resolve(res)

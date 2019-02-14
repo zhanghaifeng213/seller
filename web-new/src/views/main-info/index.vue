@@ -54,10 +54,10 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from "vuex";
 export default {
-  name: 'main-info',
-  data () {
+  name: "main-info",
+  data() {
     return {
       userLists: [],
       addList: {
@@ -69,8 +69,9 @@ export default {
         group: 'avatar',
         name: '用户头像'
       }
-    }
+    };
   },
+  computed: {},
   methods: {
     ...mapActions(['handleUserReg','handleGetUserLists','handleUpdateUser','handleDeleteUser']),
     handleEdit (index, row) {
@@ -125,23 +126,25 @@ export default {
       }) 
     },
     onSubmit() {
-      if (this.addList.username === '') {
-        this.$message.error('请输入要添加的用户名')
-      } else if (this.addList.password === '') {
-        this.$message.error('请输入密码')
+      if (this.addList.username === "") {
+        this.$message.error("请输入要添加的用户名");
+      } else if (this.addList.password === "") {
+        this.$message.error("请输入密码");
       } else {
-        this.handleUserReg(this.addList).then(res => {
-          if (res.data.code === 1) {
-            this.$message({
-              type: 'success',
-              message: '添加成功!'
-            })
-          } else {
-            this.$message.error(res.data.data)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
+        this.handleUserReg(this.addList)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "添加成功!"
+              });
+            } else {
+              this.$message.error(res.data.data);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     },
     handleAvatarSuccess(res, file) {
@@ -170,9 +173,9 @@ export default {
     // }
   },
   mounted() {
-    this.getUserLists()
+    this.getUserLists();
   }
-}
+};
 </script>
 
 <style>
@@ -180,7 +183,7 @@ export default {
   width: 100px;
   height: 100px;
 }
-.img-wrap img{
+.img-wrap img {
   width: 100%;
 }
 .avatar-uploader .el-upload {

@@ -1,0 +1,38 @@
+<view class="page page-index">
+  <view class="page__hd">
+    <view class="page__title flex-box">
+      <text class="title-text">快乐点餐</text>
+      <view class="user-avatar" catchtap="adminLogin">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+    </view>
+    <view class="page__desc">本项目是一款前后端分离全栈开发项目，本次项目做一个进店点餐系统，从一个真实的快餐店，饭店等角度出发。实现手机点餐的功能。前端采用 vue 框架构建,后台使用 Koa2
+      框架构建,MongoDB 数据库,开发过程为 git 分支管理多人协作开发。</view>
+  </view>
+
+  <view class="page__bd page__bd_spacing">
+    <view class="weui-cells__title">选择桌号点单</view>
+    <view class="weui-cells weui-cells_after-title border-left">
+      <view class="weui-cell weui-cell_select">
+        <view class="weui-cell__hd weui-cell__hd_in-select-after">
+          <view class="weui-label">桌号</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker bindchange="bindTableChange" value="{{tableIndex}}" range="{{tables}}" range-key="num">
+            <view class="weui-select weui-select_in-select-after">{{tables[tableIndex].num}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <button class="weui-btn" type="primary" bindtap="selectNumber">立即点单</button>
+  </view>
+
+  <view class="swiper-box">
+    <swiper class="slide-box" indicator-dots autoplay circular interval="3000">
+      <swiper-item wx:for="{{list}}" wx:key="{{index}}">
+        <image src="{{item.image}}" class="slide-image" />
+      </swiper-item>
+    </swiper>
+  </view>
+</view>
