@@ -11,7 +11,9 @@ import http from '@/libs/httpRequest'
 
 import store from './store'
 import VueSocketIO from 'vue-socket.io'
+import VueClipboard from 'vue-clipboard2'
 
+Vue.use(VueClipboard)
 Vue.use(new VueSocketIO({
   debug: true,
   connection: process.env.SOCKETIO,
