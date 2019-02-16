@@ -1,38 +1,47 @@
 <template>
   <div class="">
-    <div>
-      <el-upload
-        class="upload-demo"
-        ref="upload"
-        :action="actionUrl"
-        name="file"
-        :limit="1"
-        :data="extData"
-        :auto-upload="false"
-        :on-success="handleSuccess">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
-    </div>
+    <el-row>
+      <!-- 图片上传 -->
+      <el-col :span="3" class="card-box-outer">
+        <div class="card-box upload-box">
+           <div class="avatar-box">
+             <el-upload
+              :action="actionUrl"
+              :data="extData"
+              list-type="picture-card"
+              :show-file-list="false"
+              :on-error="handleError"
+              :on-success="handleSuccess"
+              :before-upload="beforeUpload">
+              <i class="el-icon-plus"></i>
+            </el-upload>
+           </div>
+        </div>
+      </el-col>
 
-
-    <el-row v-if="list.length > 0">
-      <el-col :span="4" v-for="(item, index) in list" :key="index" class="card-box-outer">
+      <!-- 图片卡片列表 -->
+      <el-col :span="3" v-for="(item, index) in list" :key="index" class="card-box-outer">
         <el-card shadow="hover" class="card-box">
-          <!-- 卡片 -->
-          <img :src="item.url" class="image" />
-          <div style="padding: 14px;">
-            <span>{{item.name}}</span>
-            <div class="bottom clearfix">
-              <!-- <time class="time">{{ new Date() }}</time> -->
-              <!-- <el-button type="text" class="button">操作按钮</el-button> -->
-            </div>
+          <div class="avatar-box" :title="item.url"><img :src="item.url" class="image" /></div>
+          <div class="desc-box">
+            <el-button size="small" type="primary" icon="el-icon-share"
+              v-clipboard:copy="item.url"
+              v-clipboard:success="onCopySuccess"
+              v-clipboard:error="onCopyError">复制链接</el-button>
+            <el-button size="small" type="danger" icon="el-icon-delete" @click.prevent="delImage(item, index)">删除图片</el-button>
           </div>
         </el-card>
       </el-col>
     </el-row>
-    <div v-else>暂无数据</div>
+
+    <div class="pagenation-bar">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :page-size="psize"
+        layout="prev, pager, next"
+        :total="totalCount">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -56,62 +65,100 @@ export default {
   },
   data() {
     return {
-      actionUrl: `${
-        process.env.NODE_ENV !== "production"
-          ? "/proxyApi/"
-          : process.env.API_ROOT
-      }/image/upload`,
+      actionUrl: http.adornUrl('/image/upload'),
       list: [],
       extData: {
         group: this.group,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize,
         name: "未命名"
       },
-      fileList: []
+      totalCount: 0,
+      pnumber: this.pageNum,
+      psize: this.pageSize,
     };
   },
   created() {
     this.getList();
   },
   methods: {
-    refresh() {
-      this.getList();
-    },
+    // 获取列表
     getList() {
+      console.log(this.pnumber);
       http({
-        url: http.adornUrl(
-          `/image/query?group=${this.group}&pageNum=${this.pageNum}&pageSize=${
-            this.pageSize
-          }`
-        ),
+        url: http.adornUrl(`/image/query?group=${this.group}&pageNum=${this.pnumber}&pageSize=${this.psize}`),
         method: "get",
-        data: {}
       }).then(res => {
         if (res.data.data.list.length > 0) {
-          res.data.data.list.map(item => {
-            item.url = process.env.API_ROOT + item.url;
-          });
           this.list = res.data.data.list;
+          this.totalCount = res.data.data.totalCount;
         } else {
           this.list = [];
         }
       });
     },
+    // 删除
+    delImage(item, index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.operateDelete(item, index);
+      })
+    },
+    operateDelete(item, index) {
+      http({
+        url: http.adornUrl(`/image/delete`),
+        method: "POST",
+        data: { id: item.id }
+      }).then(res => {
+        if (res.data && +res.data.code === 1) {
+          // this.list.splice(index, 1);
+          if (this.list.length === 1) {
+            this.pnumber = this.pnumber - 1 || 1;
+          }
+          this.getList();
+          this.$message.success(res.data.msg);
+        } else {
+          this.$message.success(res.data.msg);
+        }
+      });
+    },
+    // 复制路径
+    onCopySuccess() {
+      this.$message.success('图片URL复制成功');
+    },
+    onCopyError() {
+      this.$message.error('复制失败, 请刷新页面后重试');
+    },
 
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
+
     // 上传成功
-    handleSuccess() {
-      this.refresh();
-      this.fileList = [];
+    handleSuccess(res, file) {
+      this.$message.success('上传成功');
+      // this.list.push(res.data);
+      this.getList();
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleError() {
+      this.$message.success('上传失败');
     },
-    handlePreview(file) {
-      console.log(file);
+    // 上传校验
+    beforeUpload(file) {
+      const checkFormat = /((jpe?g)|(png)|(webp))$/i.test(file.type);
+      const isLt2M = file.size / 1024 / 1024 < 1;
+
+      if (!checkFormat) {
+        this.$message.error('上传头像图片只能是 jpg/png 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 1MB!');
+      }
+      return checkFormat && isLt2M;
+    },
+
+    // 分页切换
+    handleCurrentChange(page){
+      this.pnumber = page;
+      this.getList();
     }
   }
 };
@@ -122,15 +169,68 @@ export default {
   min-width: 150px;
 }
 .card-box {
+  position: relative;
   transform: scale(0.9);
+  &:hover {
+    .desc-box {
+      opacity: 1;
+    }
+  }
+  &.upload-box {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .avatar-box {
+      position: relative;
+      & > div {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
 
-  .image {
+  .avatar-box {
     width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    overflow: hidden;
+    cursor: pointer;
+
+    .image {
+      width: 100%;
+    }
+  }
+  .desc-box {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.5);
+    transition: all .6s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    button {
+      margin: 8px;
+      outline: none;
+    }
   }
 }
 
+.pagenation-bar {
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
 .el-card__body {
-  padding: 0;
+  padding: 0 !important;
 }
 </style>
 
