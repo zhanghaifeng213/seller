@@ -38,6 +38,7 @@
       <el-pagination
         @current-change="handleCurrentChange"
         :page-size="psize"
+        :current-page.sync="pnumber"
         layout="prev, pager, next"
         :total="totalCount">
       </el-pagination>
@@ -112,7 +113,6 @@ export default {
         data: { id: item.id }
       }).then(res => {
         if (res.data && +res.data.code === 1) {
-          // this.list.splice(index, 1);
           if (this.list.length === 1) {
             this.pnumber = this.pnumber - 1 || 1;
           }
@@ -135,7 +135,7 @@ export default {
     // 上传成功
     handleSuccess(res, file) {
       this.$message.success('上传成功');
-      // this.list.push(res.data);
+      this.pnumber = 1;
       this.getList();
     },
     handleError() {

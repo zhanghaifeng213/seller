@@ -6,7 +6,7 @@
       <p>1. 在本素材库找到目标图片。</p>
       <p>2. 鼠标移入图片上方会出现复制和删除按钮，点击复制链接按钮可复制目标图片URL地址。</p>
       <p>3. 在需要用到的地方填写得到的图片URL地址即可。</p>
-      <p>说明: 图片删除时为永久删除，请确认无误后再操作!</p>
+      <p class="warning-text">说明: 图片删除时为永久删除，请确认无误后再操作!</p>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="未分组" name="default">
@@ -61,6 +61,10 @@ export default {
     p {
       padding: 0;
       margin: 0;
+    }
+    .warning-text {
+      font-size: 12px;
+      color: #f55b5b;
     }
   }
 }
