@@ -8,6 +8,13 @@ const dishes = (params) => {
   })
 }
 
+const dishesByCID = (params) => {
+  return http({
+    url: http.adornUrl('/menu/getListByCid'),
+    method: 'get',
+    params: params
+  })
+}
 const disheAdd = (data) => {
   return http({
     url: http.adornUrl('/menu/add'),
@@ -18,7 +25,7 @@ const disheAdd = (data) => {
 
 const disheDel = (data) => {
   return http({
-    url: http.adornUrl('/menu/list'),
+    url: http.adornUrl('/menu/delete'),
     method: 'post',
     data: data
   })
@@ -39,4 +46,4 @@ const types = () => {
   })
 }
 
-export {dishes, disheAdd, types, disheDel, disheEdit}
+export {dishes, disheAdd, types, disheDel, disheEdit, dishesByCID}

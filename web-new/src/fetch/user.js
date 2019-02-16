@@ -25,7 +25,7 @@ export const inquire = (data) => {
 
 export const userReg = (data) => {
   return http({
-    url: http.adornUrl('user/reg'),
+    url: http.adornUrl('/user/reg'),
     method: 'post',
     data: data
   })
@@ -33,7 +33,7 @@ export const userReg = (data) => {
 
 export const userUpdate = (data) => {
   return http({
-    url: http.adornUrl('user/update'),
+    url: http.adornUrl('/user/update'),
     method: 'post',
     data: data
   })

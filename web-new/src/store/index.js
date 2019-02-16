@@ -11,7 +11,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     status: '',
-    token: localStorage.getItem('token') || '',
+    token: sessionStorage.getItem('token') || '',
     username: '',
     role: '',
     avatar: '',
@@ -39,20 +39,20 @@ export default new Vuex.Store({
           if (res.data.code === 1) {
             const token = res.data.data
             commit('setToken', token)
-            localStorage.setItem('token', token)
+            sessionStorage.setItem('token', token)
             resolve(res)
           } else {
             resolve(false)
           }
         }).catch((err) => {
-          localStorage.removeItem('token')
+          sessionStorage.removeItem('token')
           reject(err)
         })
       })
     },
     logout({ commit }) {
       return new Promise((resolve, reject) => {
-        localStorage.removeItem('token')
+        sessionStorage.removeItem('token')
         delete axios.defaults.headers.common['Authorization']
         resolve()
       })
@@ -111,7 +111,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleUpdataType ({commit}, data) {
+    handleUpdataType({ commit }, data) {
       return new Promise((resolve, reject) => {
         updataType(data).then(res => {
           resolve(res)
@@ -120,7 +120,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleGetUserLists ({commit}) {
+    handleGetUserLists({ commit }) {
       const data = {
         pageNum: 1,
         pageSize: 10
@@ -133,7 +133,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleUserReg ({commit}, data) {
+    handleUserReg({ commit }, data) {
       return new Promise((resolve, reject) => {
         userReg(data).then(res => {
           resolve(res)
@@ -142,7 +142,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleUpdateUser ({commit}, data) {
+    handleUpdateUser({ commit }, data) {
       return new Promise((resolve, reject) => {
         userUpdate(data).then(res => {
           resolve(res)

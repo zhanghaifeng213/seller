@@ -3,16 +3,18 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const devConfig = require('./dev.env');
+console.log('devConfig => ', devConfig)
+console.log('devConfig => ', devConfig.API_ROOT.replace(/'|"/g, ''))
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/proxyApi': {
-        target: 'http://116.62.147.91:3030',
+        target: devConfig.API_ROOT.replace(/'|"/g, ''),
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': ''
@@ -58,7 +60,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

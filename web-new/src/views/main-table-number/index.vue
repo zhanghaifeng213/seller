@@ -1,6 +1,5 @@
 <template>
   <div>
-    main-table-number
     <el-form :inline="true" :model="tableForm" class="demo-form-inline" size="small">
       <el-form-item label="桌号">
         <el-input v-model="tableForm.num" placeholder="桌号"></el-input>
@@ -52,96 +51,106 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
-            size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="handleDelete( scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
-import { tableNumber,tableAdd } from '@/fetch/number'
+import { tableNumber, tableAdd, tableDel } from "@/fetch/number";
 export default {
-  name: 'main-table-number',
+  name: "main-table-number",
   data() {
     return {
       tableList: [],
       typeList: [],
       tableForm: {
-        num: '',
-      },
-    }
+        num: ""
+      }
+    };
   },
-  mounted:function () {
-    this.getTableNumber()
+  mounted: function() {
+    this.getTableNumber();
   },
   methods: {
-    getTableNumber () {
-      tableNumber().then(
-        res => {
-          console.log(res)
-          let {code,data} =res.data;
-          if( code === 1) {
-            this.tableList=data.list;
+    getTableNumber() {
+      tableNumber()
+        .then(res => {
+          console.log(res);
+          let { code, data } = res.data;
+          if (code === 1) {
+            this.tableList = data.list;
           }
-        }
-      ).catch(
-        err => {
-          console.log(err)
-        }
-      )
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     add() {
-      tableAdd(this.tableForm).then(
-        res => {
-          console.log(res)
-          const {code, msg, errMsg} = res.data
+      tableAdd(this.tableForm)
+        .then(res => {
+          console.log(res);
+          const { code, msg, errMsg } = res.data;
           switch (code) {
             case 0:
               this.$message({
                 message: errMsg,
-                type: 'warning'
-              })
-              break
+                type: "warning"
+              });
+              break;
             case 1:
               this.$message({
                 message: msg,
-                type: 'success'
-              })
-             this.getTableNumber();
-             this.tableForm.num='';
-              break
+                type: "success"
+              });
+              this.getTableNumber();
+              this.tableForm.num = "";
+              break;
           }
-        }
-      ).catch(
-        
-        err => {
-          console.log(err)
+        })
+        .catch(err => {
+          console.log(err);
           this.$message({
-            message: '添加失败',
-            type: 'error'
-          })
-        }
-      )
+            message: "添加失败",
+            type: "error"
+          });
+        });
+    },
+    handleDelete(row) {
+      this.$confirm(`您正在删除桌号，是否确认删除《${row.num}》？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          tableDel({ id: row._id }).then(res => {
+            if (res.data.code === 1) {
+              this.$message({ type: "success", message: res.data.data });
+              this.getTableNumber();
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-  .demo-table-expand {
-    font-size: 0;
-  }
-  .demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 </style>

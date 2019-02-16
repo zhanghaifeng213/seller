@@ -29,8 +29,7 @@ export default {
         this.$router.push({ path: "/" });
       });
     }
-  },
-  mouted() {}
+  }
 };
 </script>
 
