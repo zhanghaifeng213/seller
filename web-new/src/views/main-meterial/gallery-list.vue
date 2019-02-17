@@ -1,5 +1,9 @@
 <template>
-  <div class="">
+  <div class="gallery-list">
+    <div class="viewer-box" v-viewer="vieverOptions">
+      <img v-for="src in prevImages" :src="src" :key="src">
+    </div>
+
     <el-row>
       <!-- 图片上传 -->
       <el-col :span="3" class="card-box-outer">
@@ -25,6 +29,7 @@
           <div class="avatar-box" :title="item.url"
             :style="{ background: 'url('+ item.url +') no-repeat center', backgroundSize: 'contain' }"></div>
           <div class="desc-box">
+            <el-button size="small" type="default" icon="el-icon-picture-outline" @click.prevent="previewImage(item)">图片预览</el-button>
             <el-button size="small" type="primary" icon="el-icon-share"
               v-clipboard:copy="item.url"
               v-clipboard:success="onCopySuccess"
@@ -76,6 +81,23 @@ export default {
       totalCount: 0,
       pnumber: this.pageNum,
       psize: this.pageSize,
+      vieverOptions: {
+        "inline": false,
+        "button": true,
+        "navbar": false,
+        "title": true,
+        "toolbar": true,
+        "tooltip": true,
+        "movable": true,
+        "zoomable": true,
+        "rotatable": true,
+        "scalable": true,
+        "transition": false,
+        "fullscreen": false,
+        "keyboard": true,
+        "url": "data-source"
+      },
+      prevImages: ['http://116.62.147.91:3030/upload/05c15d5feb140f0c5f1bb8502b86d6c4.png']
     };
   },
   created() {
@@ -84,7 +106,6 @@ export default {
   methods: {
     // 获取列表
     getList() {
-      console.log(this.pnumber);
       http({
         url: http.adornUrl(`/image/query?group=${this.group}&pageNum=${this.pnumber}&pageSize=${this.psize}`),
         method: "get",
@@ -106,6 +127,15 @@ export default {
       }).then(() => {
         this.operateDelete(item, index);
       })
+    },
+    // 图片预览
+    previewImage(item) {
+      console.log(item);
+      this.prevImages = [item.url];
+      setTimeout(() => {
+        const viewer = this.$el.querySelector('.viewer-box').$viewer;
+        viewer.show();
+      }, 300);
     },
     operateDelete(item, index) {
       http({
@@ -166,6 +196,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.viewer-box {
+  display: none;
+}
 .card-box-outer {
   min-width: 150px;
 }

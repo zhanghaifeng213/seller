@@ -11,7 +11,12 @@ import http from '@/libs/httpRequest'
 
 import store from './store'
 import VueSocketIO from 'vue-socket.io'
-import VueClipboard from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard2' // 复制
+
+// 图片预览
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+Vue.use(Viewer)
 
 Vue.use(VueClipboard)
 Vue.use(new VueSocketIO({
