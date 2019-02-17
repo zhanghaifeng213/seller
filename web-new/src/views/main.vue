@@ -38,7 +38,7 @@ export default {
   height: 100vh;
   .wrap-content {
     padding-top: 50px;
-    margin-left: 230px;
+    margin-left: 200px;
     min-height: 100%;
     background: #f1f4f5;
     width: calc(100vw - 230px);

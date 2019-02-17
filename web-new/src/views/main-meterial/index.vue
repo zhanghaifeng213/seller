@@ -10,15 +10,15 @@
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="未分组" name="default">
-        <gallery-list group="default" :pageNum="1" :pageSize="10"></gallery-list>
+        <gallery-list group="default" :pageNum="1" :pageSize="15"></gallery-list>
       </el-tab-pane>
 
       <el-tab-pane label="菜品展示" name="menu">
-        <gallery-list group="menu" :pageNum="1" :pageSize="10"></gallery-list>
+        <gallery-list group="menu" :pageNum="1" :pageSize="15"></gallery-list>
       </el-tab-pane>
 
       <el-tab-pane label="用户头像" name="avatar">
-        <gallery-list group="avatar" :pageNum="1" :pageSize="10"></gallery-list>
+        <gallery-list group="avatar" :pageNum="1" :pageSize="15"></gallery-list>
       </el-tab-pane>
     </el-tabs>
 
