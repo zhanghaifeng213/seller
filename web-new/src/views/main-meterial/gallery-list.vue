@@ -20,9 +20,10 @@
       </el-col>
 
       <!-- 图片卡片列表 -->
-      <el-col :span="3" v-for="(item, index) in list" :key="index" class="card-box-outer">
+      <el-col :span="3" v-for="(item, index) in list" :key="item.id" class="card-box-outer">
         <el-card shadow="hover" class="card-box">
-          <div class="avatar-box" :title="item.url"><img :src="item.url" class="image" /></div>
+          <div class="avatar-box" :title="item.url"
+            :style="{ background: 'url('+ item.url +') no-repeat center', backgroundSize: 'contain' }"></div>
           <div class="desc-box">
             <el-button size="small" type="primary" icon="el-icon-share"
               v-clipboard:copy="item.url"
