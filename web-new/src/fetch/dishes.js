@@ -8,6 +8,14 @@ const dishes = (params) => {
   })
 }
 
+const dishesList = (params) => {
+  return http({
+    url: http.adornUrl('/menu/getlist'),
+    method: 'get',
+    params: params
+  })
+}
+
 const dishesByCID = (params) => {
   return http({
     url: http.adornUrl('/menu/getListByCid'),
@@ -46,4 +54,4 @@ const types = () => {
   })
 }
 
-export {dishes, disheAdd, types, disheDel, disheEdit, dishesByCID}
+export {dishes, dishesList, disheAdd, types, disheDel, disheEdit, dishesByCID}

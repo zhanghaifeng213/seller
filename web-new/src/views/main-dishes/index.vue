@@ -2,7 +2,7 @@
   <div>
     <el-button @click="dialogVisible = true">添加菜品</el-button>
     <el-select v-model="dishesCID" placeholder="所属分类">
-      <el-option label="全部" value="全部"></el-option>
+      <el-option label="全部" value=""></el-option>
       <el-option
         v-for="item in typeList"
         :key="item.id"
@@ -80,8 +80,9 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="pages.currentPage1"
-      :page-size="pages.size"
-      layout="prev, pager, next"
+      :page-sizes="[4,8,12]"
+      :page-size="pages.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
       :total="pages.total">
     </el-pagination>
   </div>
@@ -89,6 +90,7 @@
 <script>
 import {
   dishes,
+  dishesList,
   types,
   disheAdd,
   disheDel,
@@ -106,7 +108,7 @@ export default {
     return {
       curID: "",
       curCID: "",
-      dishesCID: "全部",
+      dishesCID: "",
       dialogVisible: false,
       status: 0, // 0:添加 1:编辑
       dishesDatas: [], // 菜单列表
@@ -121,9 +123,9 @@ export default {
       },
       // 分页信息
       pages: {
-        currentPage1: 2,
-        total: 7,
-        size: 1
+        total: 0,
+        pageSize: 4,
+        pageNum: 1
       }
     };
   },
@@ -170,14 +172,20 @@ export default {
         });
     },
     // 获取全部菜品
-    getDishes(number = 1) {
-      dishes({ pageNum: number })
+    getDishes() {
+      let params = {
+        cid: this.dishesCID,
+        pageNum: this.pages.pageNum,
+        pageSize: this.pages.pageSize
+      }
+      dishesList(params)
         .then(res => {
           const { code, data } = res.data;
           if (code === 1) {
             this.dishesDatas = data.list;
-            this.dishesCID = "全部";
-            this.pagesChange(number, data.totalPage);
+            this.dishesCID = "";
+            this.pages.total = data.total
+            // this.pagesChange(number, data.total);
           }
         })
         .catch(err => {
@@ -186,14 +194,22 @@ export default {
     },
     // CID获取菜品
     getDishesCID(cid, number = 1) {
-      this.curCID = cid;
-      dishesByCID({ cid: cid, pageNum: number }).then(res => {
-        const { code, data } = res.data;
-        if (code === 1) {
-          this.dishesDatas = data.list;
-          this.pagesChange(number, data.totalPage);
-        }
-      });
+      let params = {
+        cid: this.dishesCID,
+        pageNum: this.pages.pageNum,
+        pageSize: this.pages.pageSize
+      }
+      dishesList(params)
+        .then(res => {
+          const { code, data } = res.data;
+          if (code === 1) {
+            this.dishesDatas = data.list; 
+            this.pages.total = data.total
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 添加和修改的判断
     dealDatas(e) {
@@ -292,16 +308,16 @@ export default {
         this.dishesForm[val] = "";
       }
     },
+    // 显示多少条数
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pages.pageSize = val
+      this.pages.pageNum = 1
+      this.getDishes()
     },
+    // 当前页码
     handleCurrentChange(val) {
-      if (this.dishesCID === "全部") {
-        this.getDishes(val);
-      } else {
-        this.getDishesCID(this.curCID, val);
-      }
-      console.log(`当前页: ${val}`);
+      this.pages.pageNum = val
+      this.getDishes()
     },
     pagesChange(val, total) {
       this.pages.currentPage1 = val; // 当前第几页
