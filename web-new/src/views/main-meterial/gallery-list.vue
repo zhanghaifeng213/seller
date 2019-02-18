@@ -97,7 +97,7 @@ export default {
         "keyboard": true,
         "url": "data-source"
       },
-      prevImages: ['http://116.62.147.91:3030/upload/05c15d5feb140f0c5f1bb8502b86d6c4.png']
+      prevImages: ['']
     };
   },
   created() {
