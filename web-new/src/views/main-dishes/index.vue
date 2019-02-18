@@ -80,7 +80,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="pages.currentPage1"
-      :page-sizes="[4,8,12]"
+      :page-sizes="[10,20,40,60]"
       :page-size="pages.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="pages.total">
@@ -124,7 +124,7 @@ export default {
       // 分页信息
       pages: {
         total: 0,
-        pageSize: 4,
+        pageSize: 10,
         pageNum: 1
       }
     };
