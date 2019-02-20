@@ -120,11 +120,7 @@ export default new Vuex.Store({
         })
       })
     },
-    handleGetUserLists({ commit }) {
-      const data = {
-        pageNum: 1,
-        pageSize: 10
-      }
+    handleGetUserLists({ commit }, data) {
       return new Promise((resolve, reject) => {
         inquire(data).then(res => {
           resolve(res)

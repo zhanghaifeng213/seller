@@ -51,6 +51,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      @size-change="sizeChangeHandle"
+      @current-change="currentChangeHandle"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -68,8 +77,11 @@ export default {
       imageData: {
         group: 'avatar',
         name: '用户头像'
-      }
-    };
+      },
+      total: 0,
+      pageSize: 20,
+      pageNum: 1
+    }
   },
   computed: {},
   methods: {
@@ -109,7 +121,12 @@ export default {
       this.$message('已取消')
     },
     getUserLists() {
-      this.handleGetUserLists().then(res => {
+      let list = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }
+      this.handleGetUserLists(list).then(res => {
+        this.total = res.data.data.userLists.length
         res.data.data.userLists.forEach(item => {
           item.showEdit = false
           if (item.role === '0') {
@@ -171,6 +188,21 @@ export default {
     //   formData.append('file', file.file)
       
     // }
+
+    sizeChangeHandle(val) {
+      this.pageSize = val
+      this.pageNum = 1
+      this.getUserLists()
+    },
+    sizeChangeHandle(val) {
+      this.pageSize = val
+      this.pageNum = 1
+      this.getUserLists()
+    },
+    currentChangeHandle(val) {
+      this.pageNum = val;
+      this.getUserLists()
+    }
   },
   mounted() {
     this.getUserLists();
@@ -208,5 +240,9 @@ export default {
     width: 100px;
     height: 100px;
     display: block;
+  }
+  .el-pagination {
+    margin: 20px auto;
+    text-align: center;
   }
 </style>
