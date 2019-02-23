@@ -1,23 +1,19 @@
 <template>
   <div class="main-order">
-    <el-table 
+    <el-table
       :data="orderList"
-      show-summary 
+      show-summary
       :summary-method="getSummaries"
-      border 
-      style="width: 100%">
+      border
+      style="width: 100%"
+    >
       <el-table-column type="index" width="80px"></el-table-column>
       <el-table-column prop="tableNum" width="100px" sortable label="桌号">
-        <template slot-scope="scope" v-if="scope.row.tableNum">
-          {{scope.row.tableNum.num}}
-        </template>
+        <template slot-scope="scope" v-if="scope.row.tableNum">{{scope.row.tableNum.num}}</template>
       </el-table-column>
-      <el-table-column prop="orderNum" sortable label="订单号">
-      </el-table-column>
+      <el-table-column prop="orderNum" sortable label="订单号"></el-table-column>
       <el-table-column prop="created" sortable label="下单时间">
-        <template slot-scope="scope">
-          {{scope.row.created}}
-        </template>
+        <template slot-scope="scope">{{scope.row.created}}</template>
       </el-table-column>
       <el-table-column sortable prop="status" label="订单状态" width="120px">
         <template slot-scope="scope">
@@ -35,8 +31,8 @@
             type="textarea"
             :rows="2"
             placeholder="请输入内容"
-            v-model="scope.row.remark">
-          </el-input>
+            v-model="scope.row.remark"
+          ></el-input>
         </template>
       </el-table-column>
       <el-table-column sortable prop="amount" label="订单金额" width="120px">
@@ -45,35 +41,40 @@
             v-if="scope.row.status==4"
             placeholder="请输入内容"
             type="number"
-            v-model="scope.row.amount">
-          </el-input>
+            v-model="scope.row.amount"
+          ></el-input>
           <span v-else>{{scope.row.amount}}</span>
         </template>
-      </el-table-column>    
+      </el-table-column>
       <el-table-column label="操作" width="180px">
         <template slot-scope="scope">
           <el-button size="mini" @click="view(scope.row)">查看</el-button>
-          <el-button v-if="scope.row.status==0" 
+          <el-button
+            v-if="scope.row.status==0"
             size="mini"
             type="primary"
             @click="handleFinish(1,scope.row)"
           >通知后厨</el-button>
-          <el-button v-if="scope.row.status==1" 
+          <el-button
+            v-if="scope.row.status==1"
             size="mini"
             type="success"
             @click="handleFinish(2,scope.row)"
           >已上菜</el-button>
-          <el-button v-if="scope.row.status==2" 
+          <el-button
+            v-if="scope.row.status==2"
             size="mini"
             type="info"
             @click="handleFinish(3,scope.row)"
           >菜以上齐</el-button>
-          <el-button v-if="scope.row.status==3" 
+          <el-button
+            v-if="scope.row.status==3"
             size="mini"
             type="warning"
             @click="handleFinish(4,scope.row)"
           >已结账</el-button>
-          <el-button v-if="scope.row.status==4" 
+          <el-button
+            v-if="scope.row.status==4"
             size="mini"
             type="danger"
             @click="handleFinish(5,scope.row)"
@@ -91,8 +92,8 @@
       :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
+      :total="total"
+    ></el-pagination>
     <order-detail v-if="orderVisible" ref="orderDetail"></order-detail>
   </div>
 </template>
