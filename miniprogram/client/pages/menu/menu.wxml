@@ -7,7 +7,7 @@
   <view class="main-container">
     <view class="category-list">
       <view class="category-item {{item.id === currentCategory.id ? 'active' : ''}}" wx:for="{{categoryList}}" wx:key="{{index}}"
-        bindtap="selCatetory" data-item="{{item}}">
+        bindtap="selCatetory" data-item="{{item}}" data-index="{{index}}">
         {{item.name}}
       </view>
     </view>
@@ -17,27 +17,28 @@
           分类简介: {{currentCategory.desc}}
         </view>
         <view class="weui-panel__bd">
-          <view class="weui-media-box weui-media-box_appmsg" wx:for="{{menuList}}"
-            wx:key="{{index}}">
-            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-              <image class="weui-media-box__thumb" src="{{item.img}}" />
-            </view>
-            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-              <view class="weui-media-box__title">{{item.name}}</view>
-              <view class="weui-media-box__desc">描述: {{item.desc}}</view>
-              <view class="show-line">
-                <view class="price">￥{{item.price}}</view>
-                <view class="dishes-operate">
-                  <view class="btn-operate sub" data-type="sub" data-item="{{ {...item, index} }}" bindtap="numOperate" hidden="{{!item.count}}">-</view>
-                  <view class="count" hidden="{{!item.count}}">{{item.count}}</view>
-                  <view class="btn-operate add" data-type="add" data-item="{{ {...item, index} }}" bindtap="numOperate">+</view>
+          <view wx:for="{{menuList}}" wx:for-index="cindex" wx:key="{{cindex}}" hidden="{{currentIndex !== cindex}}">
+            <view class="weui-media-box weui-media-box_appmsg" wx:for="{{menuList[currentIndex]}}" wx:for-index="mindex" wx:key="{{mindex}}">
+              <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                <image class="weui-media-box__thumb" src="{{item.img}}" />
+              </view>
+              <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                <view class="weui-media-box__title">{{item.name}}</view>
+                <view class="weui-media-box__desc">描述: {{item.desc}}</view>
+                <view class="show-line">
+                  <view class="price">￥{{item.price}}</view>
+                  <view class="dishes-operate">
+                    <view class="btn-operate sub" data-type="sub" data-item="{{ {...item, cindex, mindex} }}" bindtap="numOperate" hidden="{{!item.count}}">-</view>
+                    <view class="count" hidden="{{!item.count}}">{{item.count}}</view>
+                    <view class="btn-operate add" data-type="add" data-item="{{ {...item, cindex, mindex} }}" bindtap="numOperate">+</view>
+                  </view>
                 </view>
               </view>
             </view>
-          </view>
 
-          <view class="data-tips" wx:if="{{menuList.length === 0}}">~呜呜，暂无数据~</view>
-          <view class="data-tips" wx:else> ~已经到底啦~</view>
+            <view class="data-tips" wx:if="{{menuList.length === 0}}">~呜呜，暂无数据~</view>
+            <view class="data-tips" wx:else> ~已经到底啦~</view>
+          </view>
         </view>
       </view>
     </view>
@@ -47,8 +48,8 @@
   <!-- 订单统计 -->
   <view class="bottom-line">
     <view class="left-total">
-      已选: xxx件
+      已选: {{cartNum}}件
     </view>
-    <view class="confirm-order">立即下单</view>
+    <view class="confirm-order" bindtap="suborder">立即下单</view>
   </view>
 </view>

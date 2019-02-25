@@ -17,6 +17,7 @@ const apis = {
   getListByCid: `${API_DEV}/menu/getlist`,
   login: `${API_DEV}/user/login`,
   reg: `${API_DEV}/user/reg`,
+  suborder: `${API_DEV}/order/add`,
 }
 
 export default apis;
