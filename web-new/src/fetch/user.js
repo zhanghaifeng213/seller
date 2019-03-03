@@ -38,3 +38,11 @@ export const userUpdate = (data) => {
     data: data
   })
 }
+
+export const userDelete = (data) => {
+  return http({
+    url: http.adornUrl('/user/del'),
+    method: 'post',
+    data: data
+  })
+}

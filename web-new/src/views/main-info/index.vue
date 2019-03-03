@@ -17,34 +17,66 @@
       <el-table-column type="index"></el-table-column>
       <el-table-column prop="username" label="用户名" width="180">
         <template slot-scope="scope">
-          <el-input :value="scope.row.username" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]"></el-input>
+          <el-input
+            :value="scope.row.username"
+            v-if="scope.row.showEdit"
+            v-model="scope.row[scope.column.property]"
+          ></el-input>
           <span v-else>{{scope.row.username}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="role" label="权限" width="150">
         <template slot-scope="scope">
-          <el-input :value="scope.row.role" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]"></el-input>
+          <el-input
+            :value="scope.row.role"
+            v-if="scope.row.showEdit"
+            v-model="scope.row[scope.column.property]"
+          ></el-input>
           <span v-else>{{scope.row.role==0?'超级管理员':'普通管理员'}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="avatar" label="头像" width="300">
         <template slot-scope="scope">
-          <el-input :value="scope.row.avatar" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]"></el-input>
+          <el-input
+            :value="scope.row.avatar"
+            v-if="scope.row.showEdit"
+            v-model="scope.row[scope.column.property]"
+          ></el-input>
           <div class="img-wrap" v-else>
-            <img :src="scope.row.avatar" alt="">
+            <img :src="scope.row.avatar" alt>
           </div>
         </template>
       </el-table-column>
       <el-table-column prop="password" label="密码" width="150">
         <template slot-scope="scope">
-          <el-input :value="scope.row.password" v-if="scope.row.showEdit" v-model="scope.row[scope.column.property]" type="password"></el-input>
+          <el-input
+            :value="scope.row.password"
+            v-if="scope.row.showEdit"
+            v-model="scope.row[scope.column.property]"
+            type="password"
+          ></el-input>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" :disabled="scope.row.role==0" @click="handleFinish(scope.$index, scope.row)" v-if="scope.row.showEdit">完成</el-button>
-          <el-button size="mini" :disabled="scope.row.role==0" @click="handleEdit(scope.$index, scope.row)" v-else>编辑</el-button>
-          <el-button size="mini" :disabled="scope.row.role==0" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            :disabled="scope.row.role==0"
+            @click="handleFinish(scope.$index, scope.row)"
+            v-if="scope.row.showEdit"
+          >完成</el-button>
+          <el-button
+            size="mini"
+            :disabled="scope.row.role==0"
+            @click="handleEdit(scope.$index, scope.row)"
+            v-else
+          >编辑</el-button>
+          <el-button
+            size="mini"
+            :disabled="scope.row.role==0"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,6 +84,7 @@
 </template>
 <script>
 import { mapActions, mapState } from "vuex";
+import { userDelete } from "@/fetch/user";
 export default {
   name: "main-info",
   data() {
@@ -131,6 +164,15 @@ export default {
             console.log(err);
           });
       }
+    },
+    handleDelete(index, row) {
+      console.log(row);
+      let data = {
+        userId: row._id
+      };
+      userDelete(data).then(res => {
+        console.log(res);
+      });
     }
   },
   mounted() {
