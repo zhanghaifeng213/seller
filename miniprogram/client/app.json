@@ -10,7 +10,8 @@
     "pages/admin/menu",
     "pages/admin/menu_edit",
     "pages/admin/user",
-    "pages/admin/personal"
+    "pages/admin/personal",
+    "pages/success/success"
   ],
   "window": {
     "navigationBarTextStyle": "black",
